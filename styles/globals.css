@@ -14,3 +14,52 @@ a {
 * {
   box-sizing: border-box;
 }
+
+a, button, div, form, span {
+  cursor: default !important;
+}
+
+p {
+  margin-top: 1rem;
+}
+
+.navbar {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.dropdown-menu {
+  padding: 0;
+  border-radius: 0;
+}
+
+.dropdown-divider {
+  margin: 0;
+}
+
+.dropdown-item {
+  padding: .25rem 1.25em;
+}
+
+.modal-content {
+  border-radius: 0;
+}
+
+.modal-header {
+  padding: .25rem .5rem;
+  background-color: var(--primary);
+  border-radius: 0;
+}
+
+.modal-body {
+  padding: .5rem;
+}
+
+.modal-footer {
+  padding: .25rem;
+}
+
+.btn {
+  padding: .1rem 1.25rem;
+  border-radius: 0;
+}
