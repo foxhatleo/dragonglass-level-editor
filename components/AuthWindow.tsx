@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import * as Dispatcher from "../redux/action/Dispatcher";
-import {connect} from "react-redux";
+import {connect, ConnectedProps} from "react-redux";
 import {bindActionCreators} from "redux";
 import State from "../redux/store/State";
 
@@ -27,7 +27,12 @@ const SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ].join(" ");
 
-const AuthWindow: React.FunctionComponent<{loggedIn: boolean;} & typeof Dispatcher> = (p) => {
+const connector = connect(
+    (s: State) => ({loggedIn: s.loggedIn}),
+    (d) => bindActionCreators(Dispatcher, d),
+);
+
+const AuthWindow: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
     const [stage, setStage] = useState<AuthWindowStage>(AuthWindowStage.LOAD_AUTH);
     const fail = (e: any) => {
         setStage(AuthWindowStage.ERROR);
@@ -113,7 +118,4 @@ const AuthWindow: React.FunctionComponent<{loggedIn: boolean;} & typeof Dispatch
     );
 };
 
-export default connect<{}, {}, {}, State>(
-    (s) => ({loggedIn: s.loggedIn}),
-    (d) => bindActionCreators(Dispatcher, d),
-)(AuthWindow);
+export default connector(AuthWindow);
