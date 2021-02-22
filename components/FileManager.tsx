@@ -54,7 +54,7 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
     };
 
     return (
-        <Modal show={p.loggedIn && p.show} onHide={() => {}}>
+        <Modal backdrop="static" show={p.loggedIn && p.show} onHide={() => {}}>
             {creating < 0 ?
                 <Alert variant="danger">
                     An error occurred. Try again later.
@@ -136,13 +136,13 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
     return (
         <>
             <NWC folderId={googleStateExists ? p.googleState["folderId"] : ""} show={showFolder} />
-            <Modal show={loading} onHide={() => {}}>
+            <Modal backdrop="static" show={loading} onHide={() => {}}>
                 <Modal.Header><Modal.Title>Loading file...</Modal.Title></Modal.Header>
                 <Modal.Body>
                     Loading level file... This make take a few seconds.
                 </Modal.Body>
             </Modal>
-            <Modal show={p.googleState === null} onHide={() => {}}>
+            <Modal backdrop="static" show={p.googleState === null} onHide={() => {}}>
                 <Modal.Header><Modal.Title>Error</Modal.Title></Modal.Header>
                 <Modal.Body>
                     Please open this app from Google Drive by either opening an existing level file or creating a new

@@ -116,7 +116,7 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
     };
 
     return (
-        <Modal show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {}}>
+        <Modal backdrop="static" show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {}}>
             <Modal.Header><Modal.Title>{header()}</Modal.Title></Modal.Header>
             <Modal.Body>{content()}</Modal.Body>
             {stage == AuthManagerStage.AUTH_READY ? <Modal.Footer>

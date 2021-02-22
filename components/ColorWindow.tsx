@@ -28,7 +28,7 @@ const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & {o
     const cancel = p.onClose;
     return (
         <>
-            <Modal show={p.show} onHide={() => {}}>
+            <Modal backdrop="static" show={p.show} onHide={() => {}}>
                 <Modal.Header><Modal.Title>Change colors</Modal.Title></Modal.Header>
                 <Modal.Body>
                     {

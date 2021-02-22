@@ -7,10 +7,12 @@ import TableArea from "./TableArea";
 import {Container} from "react-bootstrap";
 import Navbar from "./Navbar";
 import ColorWindow from "./ColorWindow";
+import Simulate from "./Simulate";
 
 const App: React.FunctionComponent = () => {
     const [googleState, setGoogleState] = useState<any | null | undefined>(undefined);
     const [showColor, setShowColor] = useState<boolean>(false);
+    const [simulate, setSimulate] = useState<boolean>(false);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -29,7 +31,8 @@ const App: React.FunctionComponent = () => {
             <FileManager googleState={googleState} />
             <SaveManager />
             <ColorWindow show={showColor} onClose={() => setShowColor(false)} />
-            <Navbar onColor={() => setShowColor(true)} />
+            <Simulate show={simulate} onClose={() => setSimulate(false)} />
+            <Navbar onColor={() => setShowColor(true)} onSimulate={() => setSimulate(true)} />
             <Container className={"mt-5 mb-3"}>
                 <TableArea />
             </Container>
