@@ -95,6 +95,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                     setStartDrag(i);
                 } else if (startDrag == i) {
                     setStartDrag(-1);
+                    setSelected([...Array(p.queues.length)].map(_ => false));
                 } else {
                     setActionCount(actionCount + 1);
                     const a = Math.min(i, startDrag);
@@ -103,6 +104,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                         baseClick(i);
                     }
                     setStartDrag(-1);
+                    setSelected([...Array(p.queues.length)].map(_ => false));
                 }
                 break;
             }
