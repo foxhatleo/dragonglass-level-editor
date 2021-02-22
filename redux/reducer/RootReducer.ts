@@ -2,6 +2,7 @@ import {Reducer} from "redux";
 import State, {defaultState} from "../store/State";
 import ActionType from "../action/ActionType";
 import Action from "../action/Action";
+import * as V1Representation from "../util/V1Representation";
 
 function lastClicked(s: number[][]): [[number, number], number] {
     let biggest = 0, qI = 0, cI = 0;
@@ -60,6 +61,75 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                 }
             }
             return {...s, editor: {...s.editor, selected: newSelected}};
+        }
+        case ActionType.SET_NAME: {
+            return {...s, name: a.value};
+        }
+        case ActionType.PARSE_DATA: {
+            if (a.value.trim() == "") {
+                return {...s};
+            }
+            const parsedJson = JSON.parse(a.value);
+            let l;
+            switch (parsedJson["version"]) {
+                case 1: {
+                    l = V1Representation.parse(parsedJson);
+                    break;
+                }
+                default: {
+                    throw new Error("Not a supported version.");
+                }
+            }
+            const sel = [];
+            for (let q = 0; q < l.queues.length; q++) {
+                const qsel = [];
+                const qc = l.queues[q].length;
+                for (let c = 0; c < qc + 1; c++) {
+                    qsel.push(0);
+                }
+                sel.push(qsel);
+            }
+            let e = {selected: sel};
+            return {...s, level: l, editor: e};
+        }
+        case ActionType.CLEAR_SELECTION: {
+            const newSelected = s.editor.selected.map(i => (i.map(_ => 0)));
+            return {...s, editor: {...s.editor, selected: newSelected}};
+        }
+        case ActionType.PAINT: {
+            const queues = s.level.queues.map(a => a.map(b => b.map(c => c)));
+            const selected = s.editor.selected.map(a => a.map(b => b));
+            for (let qi = 0; qi < s.editor.selected.length; qi++) {
+                const q = s.editor.selected[qi];
+                for (let ci = 0; ci < q.length; ci++) {
+                    if (q[ci] < 1) continue;
+                    if (ci == s.level.queues[qi].length) {
+                        queues[qi].push([a.value]);
+                        selected[qi].push(0);
+                    } else if (!queues[qi][ci].includes(a.value)) {
+                        queues[qi][ci].push(a.value);
+                        queues[qi][ci].sort();
+                    }
+                }
+            }
+            return {...s, level: {...s.level, queues}, editor: {...s.editor, selected}};
+        }
+        case ActionType.ERASE: {
+            const queues = s.level.queues.map(a => a.map(b => b.map(c => c)));
+            const selected = s.editor.selected.map(a => a.map(b => b));
+            for (let qi = 0; qi < selected.length; qi++) {
+                const q = selected[qi];
+                for (let ci = 0; ci < q.length; ci++) {
+                    if (q[ci] < 1) continue;
+                    queues[qi][ci].splice(queues[qi][ci].indexOf(a.value), 1);
+                    if (queues[qi][ci].length == 0) {
+                        queues[qi].splice(ci, 1);
+                        q.splice(ci, 1);
+                        ci--;
+                    }
+                }
+            }
+            return {...s, level: {...s.level, queues}, editor: {...s.editor, selected}};
         }
     }
     return s;

@@ -17,6 +17,7 @@ a {
 
 a, button, div, form, span {
   cursor: default !important;
+  user-select: none;
 }
 
 p {

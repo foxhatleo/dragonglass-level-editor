@@ -46,7 +46,12 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
                 case AuthManagerStage.LOAD_AUTH: {
                     gapi.load("client:auth2", {
                         onerror: fail,
-                        callback: () => setStage(AuthManagerStage.INIT_CLIENT),
+                        // callback: () => {
+                            // gapi.load('drive-share', {
+                            //     onerror: fail,
+                                callback: () => setStage(AuthManagerStage.INIT_CLIENT)
+                            // });
+                        // },
                     });
                     break;
                 }

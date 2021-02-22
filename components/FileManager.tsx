@@ -93,7 +93,7 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
 
     useEffect(() => {
         const i = setInterval(() => {
-            if (gapi && gapi.client && gapi.client.drive && gapi.client.drive.files) {
+            if (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files) {
                 setDriveApiReady(true);
                 clearInterval(i);
             }
@@ -113,7 +113,15 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
             fileId: p.fileId,
             alt: "media"
         }).then(res => {
-            setLoading(false);
+            gapi.client.drive.files.get({
+                fileId: p.fileId
+            }).then(res2 => {
+                setLoading(false);
+                p.setName(JSON.parse(res2.body)["name"]);
+                p.parseData(res.body || "");
+            }).catch(() => {
+                setTimeout(loadFile, 300);
+            });
         }).catch(() => {
             setTimeout(loadFile, 300);
         });

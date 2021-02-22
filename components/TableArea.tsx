@@ -3,7 +3,8 @@ import {connect, ConnectedProps} from "react-redux";
 import State from "../redux/store/State";
 import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
-import {Button} from "react-bootstrap";
+import {Alert, Button} from "react-bootstrap";
+import ColorStrip from "./ColorStrip";
 
 const connector = connect(
     (s: State) => ({colors: s.level.colors, queues: s.level.queues, editorSelected: s.editor.selected}),
@@ -17,37 +18,12 @@ const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & {queueIn
     if (p.customerInd < queue.length) {
         const colorInds = queue[p.customerInd];
         const colors = colorInds.map((c) => p.colors[c]);
-        inner = (
-            <ul>
-                {colors.map((c, i) => (
-                    <li key={i}>
-                        <span className={"dot"} style={{background: c}} />
-                    </li>
-                ))}
-                <style jsx>{`
-                  ul, li {
-                    display: block;
-                    width: 100%;
-                    text-align: center;
-                  }
-                  li, span {
-                    display: inline-block;
-                  }
-                  span {
-                    width: 15px;
-                    height: 15px;
-                    border-radius: 8px;
-                  }
-                  li:not(:first-child) {
-                    margin-left: .5rem;
-                  }
-                `}</style>
-            </ul>
-        )
+        inner = <ColorStrip colors={colors} />;
     } else if (p.customerInd == queue.length) {
         inner = <>&lt;add&gt;</>
     }
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
         if (e.shiftKey) {
             p.shiftClick([p.queueInd, p.customerInd]);
         } else if (e.ctrlKey) {
@@ -67,10 +43,10 @@ const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & {queueIn
                     -ms-user-select: none;
                     -webkit-user-select: none;
                     padding: 1rem .2rem;
-                    background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? .3 : .05});
+                    background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? .4 : .1});
                   }
                   .area:hover, .area:active {
-                    background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? .3 : .15});
+                    background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? .4 : .25});
                   }
                 `}</style>
             </div>
@@ -80,23 +56,23 @@ const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & {queueIn
 const Cell = connector(_Cell);
 
 const TableArea: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
+    const clear = (e: React.MouseEvent<HTMLDivElement>) => {
+        p.clearSelection();
+    }
     return (
         <>
-            Hold Ctrl to select individual cells at the same time.<br/>
-            Hold Shift to select an area of cells.
-            <div className={"table-area"}>
-                <div className={"top-header"}><div className={"cell"}>Queues</div></div>
+            <div className={"table-area"} onClick={clear}>
                 <div>
-                    {[...Array(p.queues.length)].map((_, i) => <div className={"cell"}>Q{i + 1}</div>)}
-                    <div className={"cell"}>
+                    {[...Array(p.queues.length)].map((_, i) => <div className={"cell"} key={i}>Q{i + 1}</div>)}
+                    <div className={"cell pm"}>
                         <Button>+</Button><Button>-</Button>
                     </div>
                 </div>
                 {[...Array(p.queues.reduce((u, c) => Math.max(u, c.length), 0) + 1)].map(
                     (_, i) => (
-                        <div className={"content-row"}>
+                        <div className={"content-row"} key={i}>
                             {[...Array(p.queues.length)].map((_, i2) => (
-                                <div className={"cell"}>
+                                <div className={"cell"} key={i2}>
                                     <Cell queueInd={i2} customerInd={i} />
                                 </div>
                             ))}
@@ -104,18 +80,32 @@ const TableArea: React.FunctionComponent<ConnectedProps<typeof connector>> = (p)
                     )
                 )}
             </div>
+            <Alert variant={"dark"} className={"mt-3"}>
+                <strong>How to use:</strong>
+                <ul>
+                    <li>Hold Ctrl to select individual cells at the same time.</li>
+                    <li>Hold Shift to select an area of cells.</li>
+                    <li>Click anywhere else in the table area to clear selections.</li>
+                </ul>
+            </Alert>
             <style jsx>{`
               .table-area :global(.btn) {
-                padding: .2rem;
+                padding: .1rem .5rem;
+              }
+              .table-area {
+                padding: 1rem;
+                border-radius: 10px;
+                background: black;
+                border: 1px solid #666;
               }
               .cell {
-                width: 80px;
+                width: 120px;
                 display: inline-block;
-                padding: .2rem;
+                padding: .1rem .2rem;
                 text-align: center;
               }
-              .top-header .cell {
-                width: ${(p.queues.length + 1) * 80}px;
+              .cell.pm {
+                width: auto;
               }
               .content-row .cell {
                 padding: .3rem .1rem;

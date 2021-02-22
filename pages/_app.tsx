@@ -6,7 +6,8 @@ import "../styles/globals.css";
 
 const MyApp: FunctionComponent<AppProps> = ({Component, pageProps}) => (
     <React.Fragment>
-        <script src="https://apis.google.com/js/platform.js" />
+        <script type="text/javascript" src="https://apis.google.com/js/platform.js" />
+        {/*<script type="text/javascript" src="https://apis.google.com/js/api.js" />*/}
         <Component {...pageProps} />
     </React.Fragment>
 );

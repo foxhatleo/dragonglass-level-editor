@@ -3,6 +3,8 @@ import AuthManager from "./AuthManager";
 import {parse} from "query-string";
 import FileManager from "./FileManager";
 import TableArea from "./TableArea";
+import {Container} from "react-bootstrap";
+import Navbar from "./Navbar";
 
 const App: React.FunctionComponent = () => {
     const [googleState, setGoogleState] = useState<any | null | undefined>(undefined);
@@ -22,7 +24,10 @@ const App: React.FunctionComponent = () => {
         <React.Fragment>
             <AuthManager />
             <FileManager googleState={googleState} />
-            <TableArea />
+            <Navbar />
+            <Container className={"mt-5 mb-3"}>
+                <TableArea />
+            </Container>
         </React.Fragment>
     );
 };
