@@ -28,7 +28,7 @@ const defaultState: RootState = {
         queues: [[], [], [], [], []],
     },
     editor: {
-        selected: [[false], [false], [false], [false], [false]],
+        selected: [[0], [0], [0], [0], [0]],
     },
 };
 export {defaultState};
