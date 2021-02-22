@@ -34,7 +34,10 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
         }
         case ActionType.CTRL_CLICK: {
             const newSelected = s.editor.selected.map(i => (i.map(o => o)));
-            newSelected[a.value[0]][a.value[1]] = lastClicked(newSelected)[1] + 1;
+            if (newSelected[a.value[0]][a.value[1]] > 0)
+                newSelected[a.value[0]][a.value[1]] = 0;
+            else
+                newSelected[a.value[0]][a.value[1]] = lastClicked(newSelected)[1] + 1;
             return {...s, editor: {...s.editor, selected: newSelected}};
         }
         case ActionType.SHIFT_CLICK: {
