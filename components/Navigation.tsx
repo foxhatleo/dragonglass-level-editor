@@ -2,7 +2,6 @@ import React from "react";
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 
 export type NavigationProps = {
-    onAuthorize: () => void;
 };
 
 const Navigation: React.FunctionComponent<NavigationProps> = (p) => {
@@ -15,11 +14,12 @@ const Navigation: React.FunctionComponent<NavigationProps> = (p) => {
                 <Nav className="mr-auto">
                     <NavDropdown id="file-nav"
                                  title="File">
-                        <NavDropdown.Item>New level</NavDropdown.Item>
-                        <NavDropdown.Item>Open level</NavDropdown.Item>
-                        <NavDropdown.Item>Close level</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item onClick={p.onAuthorize}>Authorize Access to Google Drive</NavDropdown.Item>
+                        <NavDropdown.Item>Export level as JSON (experimental)</NavDropdown.Item>
+                    </NavDropdown>
+                    <NavDropdown id="level-nav"
+                                 title="Level">
+                        <NavDropdown.Item>Change colors</NavDropdown.Item>
+                        <NavDropdown.Item>Change</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
             </Navbar>

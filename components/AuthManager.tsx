@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from "react-redux";
 import {bindActionCreators} from "redux";
 import State from "../redux/store/State";
 
-enum AuthWindowStage {
+enum AuthManagerStage {
     ERROR,
     LOAD_AUTH,
     INIT_CLIENT,
@@ -32,25 +32,25 @@ const connector = connect(
     (d) => bindActionCreators(Dispatcher, d),
 );
 
-const AuthWindow: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
-    const [stage, setStage] = useState<AuthWindowStage>(AuthWindowStage.LOAD_AUTH);
+const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
+    const [stage, setStage] = useState<AuthManagerStage>(AuthManagerStage.LOAD_AUTH);
     const fail = (e: any) => {
-        setStage(AuthWindowStage.ERROR);
-        console.error(`AuthWindow error. Current stage: ${stage}`);
+        setStage(AuthManagerStage.ERROR);
+        console.error(`InitManager error. Current stage: ${stage}`);
         if (e) console.error(e);
     }
 
     useEffect(() => {
         try {
             switch (stage) {
-                case AuthWindowStage.LOAD_AUTH: {
+                case AuthManagerStage.LOAD_AUTH: {
                     gapi.load("client:auth2", {
                         onerror: fail,
-                        callback: () => setStage(AuthWindowStage.INIT_CLIENT),
+                        callback: () => setStage(AuthManagerStage.INIT_CLIENT),
                     });
                     break;
                 }
-                case AuthWindowStage.INIT_CLIENT: {
+                case AuthManagerStage.INIT_CLIENT: {
                     gapi.client.init({
                         apiKey: API_KEY,
                         clientId: CLIENT_ID,
@@ -59,7 +59,7 @@ const AuthWindow: React.FunctionComponent<ConnectedProps<typeof connector>> = (p
                     }).then(() => {
                         gapi.auth2.getAuthInstance().isSignedIn.listen(p.updateSignInStatus);
                         p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-                        setStage(AuthWindowStage.AUTH_READY);
+                        setStage(AuthManagerStage.AUTH_READY);
                     }, fail);
                     break;
                 }
@@ -71,32 +71,39 @@ const AuthWindow: React.FunctionComponent<ConnectedProps<typeof connector>> = (p
 
     const logIn = () => {
         gapi.auth2.getAuthInstance().signIn()
-            .then(() => {
-                p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get())
-            })
+            .then(() => {p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get())});
     };
+
+    const header = () => {
+        if (stage === AuthManagerStage.AUTH_READY) return "Sign In with your Cornell Google account";
+        return "Initializing";
+    }
 
     const content = () => {
         switch (stage) {
-            case AuthWindowStage.ERROR:
+            case AuthManagerStage.ERROR:
                 return (<>Cannot connect to Google auth server.<br/>Refresh this page.</>);
-            case AuthWindowStage.INIT_CLIENT:
+            case AuthManagerStage.INIT_CLIENT:
                 return (<>Initializing Google client...</>);
-            case AuthWindowStage.LOAD_AUTH:
+            case AuthManagerStage.LOAD_AUTH:
                 return (<>Loading Google auth module...</>);
-            case AuthWindowStage.AUTH_READY:
-                if (p.loggedIn)
-                    return (<>Logged in.</>);
+            case AuthManagerStage.AUTH_READY:
+                if (p.loggedIn) return <>Logged in. Please wait...</>;
                 return (
                     <>
-                        Level files are stored in your Google Drive.<br/>
+                        Level files are stored in the Google Drive of your Cornell account.<br/>
                         To continue, authorize access to your Google account.
                         <p>
-                            <strong>Privacy policy: </strong>
+                            <strong>Privacy policy</strong><br/>
                             This level editor only requests access to the files that you have opened or created with
                             this app (in other words, the level files). It will <em>NOT</em> have access to any other
-                            file in your Google Drive, nor any other part of your account (including but not limited to
+                            file in your Google Drive or any other part of your account (including but not limited to
                             Gmail, Contacts, Calendar, etc).
+                        </p>
+                        <p>
+                            <strong>If you are stuck on this screen</strong><br/>
+                            Try to clear cookies and cache of your browser. If problem persists, try disabling browser
+                            extensions or settings that limit third-party cookies.
                         </p>
                     </>
                 );
@@ -104,18 +111,16 @@ const AuthWindow: React.FunctionComponent<ConnectedProps<typeof connector>> = (p
     };
 
     return (
-        <Modal show={stage != AuthWindowStage.AUTH_READY || !p.loggedIn} onHide={() => {}}>
-            <Modal.Header>
-                Sign in with your Google account
-            </Modal.Header>
+        <Modal show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {}}>
+            <Modal.Header><Modal.Title>{header()}</Modal.Title></Modal.Header>
             <Modal.Body>{content()}</Modal.Body>
-            <Modal.Footer>
-                <Button onClick={logIn} variant="primary" disabled={stage != AuthWindowStage.AUTH_READY}>
+            {stage == AuthManagerStage.AUTH_READY ? <Modal.Footer>
+                <Button onClick={logIn} variant="primary" disabled={stage != AuthManagerStage.AUTH_READY}>
                     Authorize
                 </Button>
-            </Modal.Footer>
+            </Modal.Footer> : <></>}
         </Modal>
     );
 };
 
-export default connector(AuthWindow);
+export default connector(AuthManager);

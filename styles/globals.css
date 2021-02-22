@@ -63,3 +63,8 @@ p {
   padding: .1rem 1.25rem;
   border-radius: 0;
 }
+
+.form-control {
+  padding: .125rem .25rem;
+  border-radius: 0;
+}
