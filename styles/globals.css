@@ -69,3 +69,8 @@ p {
   padding: .125rem .25rem;
   border-radius: 0;
 }
+
+.modal-title {
+  font-size: 1rem;
+  font-weight: 400;
+}

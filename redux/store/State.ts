@@ -24,10 +24,10 @@ const defaultState: RootState = {
     name: "",
     level: {
         colors: [
-            "#ff0000",
-            "#ffff00",
-            "#00ff00",
-            "#00ffff",
+            "#F44E3B",
+            "#FB9E00",
+            "#68BC00",
+            "#73D8FF",
         ],
         queues: [[], [], [], [], []],
     },

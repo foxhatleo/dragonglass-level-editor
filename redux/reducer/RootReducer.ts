@@ -152,6 +152,16 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
         case ActionType.MARK_SAVED: {
             return {...s, editor: {...s.editor, lastStored: a.value}}
         }
+        case ActionType.SET_COLORS: {
+            const st = {...s, level: {...s.level, colors: a.value}};
+            if (st.level.colors.length >= s.level.colors.length) return st;
+            const newSelected = st.editor.selected.map(i => (i.map(_ => 1)));
+            let temp_st = {...st, editor: {...st.editor, selected: newSelected}};
+            for (let i = s.level.colors.length - 1; i > st.level.colors.length - 1; i--) {
+                temp_st = RootReducer(temp_st, {type: ActionType.ERASE, value: i});
+            }
+            return temp_st;
+        }
     }
     return s;
 };

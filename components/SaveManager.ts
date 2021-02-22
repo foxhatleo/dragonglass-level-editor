@@ -53,6 +53,11 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {loa
     }
 
     render() {
+        if (this.props.ready && typeof window !== "undefined") {
+            window.onbeforeunload = this.state.loading ? function() {
+                return "It seems that your level has not been saved yet. Are you sure you want to exit?";
+            } : null;
+        }
         return null;
     }
 }

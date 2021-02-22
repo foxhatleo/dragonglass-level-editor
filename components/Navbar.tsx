@@ -16,10 +16,10 @@ const connector = connect(
         anySelected: s.editor.selected.reduce((p, q) => (p || q.reduce((p, c) => p || (c > 0), false)), false)}),
     (d) => bindActionCreators(Dispatcher, d),
 );
-const Navbar: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
+const Navbar: React.FunctionComponent<ConnectedProps<typeof connector> & {onColor: () => void;}> = (p) => {
     const anySelected = p.anySelected;
     const exportJSON = () => {
-        const blob = new Blob([V1Representation.stringify(p.level)], {type: "application/json"});
+        const blob = new Blob([V1Representation.stringify(p.level, true)], {type: "application/json"});
         const a = p.name.split(".").concat();
         a.splice(a.length - 1, 1);
         const filename = a.join(".") + ".json";
@@ -40,7 +40,7 @@ const Navbar: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) =>
             <div>
                 <NavbarBrand>{p.name}</NavbarBrand>
                 {!anySelected ? <>
-                    <Button>Edit colors ({p.colorLength})</Button>
+                    <Button onClick={p.onColor}>Edit colors ({p.colorLength})</Button>
                     <Button disabled={true}>Simulate</Button>
                     <Button onClick={exportJSON}>Export</Button>
                 </> : <>

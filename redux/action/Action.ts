@@ -14,6 +14,7 @@ declare type Action =
     PureAction<ActionType.ADD_QUEUE> |
     PureAction<ActionType.REMOVE_QUEUE> |
     SetterAction<ActionType.MARK_SAVED, string> |
+    SetterAction<ActionType.SET_COLORS, string[]> |
     SetterAction<ActionType.PAINT, number> |
     SetterAction<ActionType.ERASE, number> |
     SetterAction<ActionType.UPDATE_SIGN_IN_STATUS, boolean> |

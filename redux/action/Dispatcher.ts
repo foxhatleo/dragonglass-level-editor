@@ -10,6 +10,7 @@ export const addQueue = marker(ActionType.ADD_QUEUE);
 export const removeQueue = marker(ActionType.REMOVE_QUEUE);
 export const markReady = marker(ActionType.MARK_READY);
 export const markSaved = updater<string>(ActionType.MARK_SAVED);
+export const setColors = updater<string[]>(ActionType.SET_COLORS);
 export const updateSignInStatus = updater<boolean>(ActionType.UPDATE_SIGN_IN_STATUS);
 export const paint = updater<number>(ActionType.PAINT);
 export const erase = updater<number>(ActionType.ERASE);

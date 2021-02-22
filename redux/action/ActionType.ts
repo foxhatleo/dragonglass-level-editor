@@ -13,5 +13,6 @@ enum ActionType {
     REMOVE_QUEUE,
     MARK_READY,
     MARK_SAVED,
+    SET_COLORS,
 }
 export default ActionType;
