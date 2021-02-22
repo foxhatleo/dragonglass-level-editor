@@ -9,7 +9,8 @@ export function parse(a: string): LevelData | null {
 const pretext = "; ==============================================================================\n" +
     "; This file is to be opened by Panic Painter Level Editor.\n" +
     ";\n" +
-    "; To install, go to https://workspace.google.com/marketplace/app/appname/656662885342\n" +
+    "; To install, go to:\n" +
+    ";     https://workspace.google.com/marketplace/app/appname/656662885342\n" +
     "; Access limited to individuals affiliated with Cornell University.\n" +
     "; ==============================================================================\n" +
     "\n\n\n"
