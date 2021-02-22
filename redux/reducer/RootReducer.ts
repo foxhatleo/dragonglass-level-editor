@@ -73,17 +73,7 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
             if (a.value.trim() == "") {
                 l = JSON.parse(JSON.stringify(defaultState.level));
             } else {
-                const parsedJson = JSON.parse(a.value);
-                switch (parsedJson["version"]) {
-                    case 1:
-                    default: {
-                        l = V1Representation.parse(parsedJson);
-                        break;
-                    }
-                    // default: {
-                    //     throw new Error("Not a supported version.");
-                    // }
-                }
+                l = V1Representation.parse(a.value);
             }
             const sel = [];
             for (let q = 0; q < l.queues.length; q++) {
