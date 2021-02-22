@@ -69,18 +69,20 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
             return {...s, name: a.value};
         }
         case ActionType.PARSE_DATA: {
-            if (a.value.trim() == "") {
-                return {...s};
-            }
-            const parsedJson = JSON.parse(a.value);
             let l;
-            switch (parsedJson["version"]) {
-                case 1: {
-                    l = V1Representation.parse(parsedJson);
-                    break;
-                }
-                default: {
-                    throw new Error("Not a supported version.");
+            if (a.value.trim() == "") {
+                l = JSON.parse(JSON.stringify(defaultState.level));
+            } else {
+                const parsedJson = JSON.parse(a.value);
+                switch (parsedJson["version"]) {
+                    case 1:
+                    default: {
+                        l = V1Representation.parse(parsedJson);
+                        break;
+                    }
+                    // default: {
+                    //     throw new Error("Not a supported version.");
+                    // }
                 }
             }
             const sel = [];
@@ -92,7 +94,7 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                 }
                 sel.push(qsel);
             }
-            let e = {selected: sel};
+            let e = {selected: sel, ready: true, lastStored: JSON.stringify(l)};
             return {...s, level: l, editor: e};
         }
         case ActionType.CLEAR_SELECTION: {
@@ -133,6 +135,22 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                 }
             }
             return {...s, level: {...s.level, queues}, editor: {...s.editor, selected}};
+        }
+        case ActionType.ADD_QUEUE: {
+            return {...s, level: {...s.level, queues: [...s.level.queues, []]}, editor: {...s.editor, selected: [...s.editor.selected, [0]]}};
+        }
+        case ActionType.REMOVE_QUEUE: {
+            const queues = s.level.queues;
+            queues.splice(queues.length - 1, 1);
+            const selected = s.editor.selected;
+            selected.splice(selected.length - 1, 1);
+            return {...s, level: {...s.level, queues}, editor: {...s.editor, selected}};
+        }
+        case ActionType.MARK_READY: {
+            return {...s, editor: {...s.editor, ready: true}};
+        }
+        case ActionType.MARK_SAVED: {
+            return {...s, editor: {...s.editor, lastStored: a.value}}
         }
     }
     return s;

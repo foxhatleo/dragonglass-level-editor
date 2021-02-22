@@ -9,5 +9,9 @@ enum ActionType {
     CLEAR_SELECTION,
     PAINT,
     ERASE,
+    ADD_QUEUE,
+    REMOVE_QUEUE,
+    MARK_READY,
+    MARK_SAVED,
 }
 export default ActionType;

@@ -65,7 +65,8 @@ const TableArea: React.FunctionComponent<ConnectedProps<typeof connector>> = (p)
                 <div>
                     {[...Array(p.queues.length)].map((_, i) => <div className={"cell"} key={i}>Q{i + 1}</div>)}
                     <div className={"cell pm"}>
-                        <Button>+</Button><Button>-</Button>
+                        {p.queues.length < 6 ? <Button onClick={p.addQueue}>+</Button> : ""}
+                        {p.queues.length > 1 ? <Button onClick={p.removeQueue}>-</Button> : ""}
                     </div>
                 </div>
                 {[...Array(p.queues.reduce((u, c) => Math.max(u, c.length), 0) + 1)].map(

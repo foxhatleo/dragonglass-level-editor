@@ -77,7 +77,7 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
 const NWC = nwConnector(NewWindow);
 
 const fmConnector = connect(
-    (s: State) => ({fileId: s.fileId}),
+    (s: State) => ({fileId: s.fileId, loggedIn: s.loggedIn}),
     (d) => bindActionCreators(Dispatcher, d),
 );
 
@@ -128,10 +128,10 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
     };
 
     useEffect(() => {
-        if (p.fileId.length > 0 && driveApiReady) {
+        if (p.fileId.length > 0 && p.loggedIn && driveApiReady) {
             loadFile();
         }
-    }, [p.fileId, driveApiReady]);
+    }, [p.fileId, driveApiReady, p.loggedIn]);
 
     return (
         <>

@@ -5,24 +5,44 @@ import State from "../redux/store/State";
 import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
 import ColorStrip from "./ColorStrip";
+import * as V1Representation from "../redux/util/V1Representation";
 
 const connector = connect(
     (s: State) => ({name: s.name, colorLength: s.level.colors.length, colors: s.level.colors,
         selected: s.editor.selected,
         queues: s.level.queues,
+        level: s.level,
+        saved: s.editor.lastStored,
         anySelected: s.editor.selected.reduce((p, q) => (p || q.reduce((p, c) => p || (c > 0), false)), false)}),
     (d) => bindActionCreators(Dispatcher, d),
 );
 const Navbar: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
     const anySelected = p.anySelected;
+    const exportJSON = () => {
+        const blob = new Blob([V1Representation.stringify(p.level)], {type: "application/json"});
+        const a = p.name.split(".").concat();
+        a.splice(a.length - 1, 1);
+        const filename = a.join(".") + ".json";
+        if(typeof window.navigator.msSaveOrOpenBlob != "undefined") {
+            window.navigator.msSaveBlob(blob, filename);
+        }
+        else{
+            const elem = window.document.createElement('a');
+            elem.href = window.URL.createObjectURL(blob);
+            elem.download = filename;
+            document.body.appendChild(elem);
+            elem.click();
+            document.body.removeChild(elem);
+        }
+    };
     return (
-        <RBNavbar variant={"dark"} bg={"dark"} fixed={"top"}>
-            <NavbarBrand>{p.name}</NavbarBrand>
+        <RBNavbar variant={"dark"} bg={"dark"} fixed={"top"} className={"justify-content-between"}>
             <div>
+                <NavbarBrand>{p.name}</NavbarBrand>
                 {!anySelected ? <>
                     <Button>Edit colors ({p.colorLength})</Button>
                     <Button disabled={true}>Simulate</Button>
-                    <Button disabled={true}>Export</Button>
+                    <Button onClick={exportJSON}>Export</Button>
                 </> : <>
                     {p.colors.map((c, i) => {
                         const allSelected = p.selected.reduce((pr, q, qi) => (pr && q.reduce((pr, c, ci) => {
@@ -37,6 +57,9 @@ const Navbar: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) =>
                         </Button>;
                     })}
                 </>}
+            </div>
+            <div>
+                {p.saved != V1Representation.stringify(p.level) ? "Saving..." : "Saved."}
             </div>
             <style jsx>{`
               div :global(.btn) {

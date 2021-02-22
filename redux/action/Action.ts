@@ -10,6 +10,10 @@ export type CellInd = [number, number];
 
 declare type Action =
     PureAction<ActionType.CLEAR_SELECTION> |
+    PureAction<ActionType.MARK_READY> |
+    PureAction<ActionType.ADD_QUEUE> |
+    PureAction<ActionType.REMOVE_QUEUE> |
+    SetterAction<ActionType.MARK_SAVED, string> |
     SetterAction<ActionType.PAINT, number> |
     SetterAction<ActionType.ERASE, number> |
     SetterAction<ActionType.UPDATE_SIGN_IN_STATUS, boolean> |

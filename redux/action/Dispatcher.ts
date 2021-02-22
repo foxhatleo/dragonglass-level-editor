@@ -6,6 +6,10 @@ const updater = <T> (type: ActionType):
     ((value: T) => Action) => ((value: T) => ({type, value} as unknown as Action));
 
 export const clearSelection = marker(ActionType.CLEAR_SELECTION);
+export const addQueue = marker(ActionType.ADD_QUEUE);
+export const removeQueue = marker(ActionType.REMOVE_QUEUE);
+export const markReady = marker(ActionType.MARK_READY);
+export const markSaved = updater<string>(ActionType.MARK_SAVED);
 export const updateSignInStatus = updater<boolean>(ActionType.UPDATE_SIGN_IN_STATUS);
 export const paint = updater<number>(ActionType.PAINT);
 export const erase = updater<number>(ActionType.ERASE);

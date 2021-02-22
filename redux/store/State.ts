@@ -5,6 +5,8 @@ export type LevelData = {
 
 export type EditorState = {
     selected: number[][];
+    lastStored: string;
+    ready: boolean;
 };
 
 declare type RootState = {
@@ -30,6 +32,8 @@ const defaultState: RootState = {
         queues: [[], [], [], [], []],
     },
     editor: {
+        lastStored: "",
+        ready: false,
         selected: [[0], [0], [0], [0], [0]],
     },
 };

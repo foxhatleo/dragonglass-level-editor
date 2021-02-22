@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/dragonglass-level-editor.iml" filepath="$PROJECT_DIR$/.idea/dragonglass-level-editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/panic-painter-level-editor.iml" filepath="$PROJECT_DIR$/.idea/panic-painter-level-editor.iml" />
     </modules>
   </component>
 </project>
