@@ -61,21 +61,23 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
         if (mode == 2) setSelected([...Array(p.queues.length)].map(_ => false));
     };
     const baseClick = (i: number) => {
-        const t = queues.map(a => a.map(b => b.map(c => c)));
-        if (i < 0 || i >= queues.length || t[i].length == 0) return;
-        const ind = t[i][0].indexOf(currentColor);
-        if (ind < 0) {
-            if (t[i][0].length == 0) return;
-            setLostClients((p) => p + 1);
-            queues[i].splice(0, 1);
-            setQueues(queues);
-            return;
-        }
-        t[i][0].splice(ind, 1);
-        if (t[i][0].length < 1) {
-            queues[i].splice(0, 1);
-        }
-        setQueues(queues);
+        setQueues((queues) => {
+            const t = queues.map(a => a.map(b => b.map(c => c)));
+            if (i < 0 || i >= queues.length || t[i].length == 0) return t;
+            const ind = t[i][0].indexOf(currentColor);
+            if (ind < 0) {
+                if (t[i][0].length == 0) return t;
+                setLostClients((p) => p + 1);
+                t[i].splice(0, 1);
+                setQueues(t);
+                return t;
+            }
+            t[i][0].splice(ind, 1);
+            if (t[i][0].length < 1) {
+                t[i].splice(0, 1);
+            }
+            return t;
+        });
     };
     const clickTile = (i: number) => {
         switch (mode) {
