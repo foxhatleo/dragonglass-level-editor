@@ -94,7 +94,7 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                 }
                 sel.push(qsel);
             }
-            let e = {selected: sel, ready: true, lastStored: JSON.stringify(l)};
+            let e = {selected: sel, ready: true, lastStored: V1Representation.stringify(l)};
             return {...s, level: l, editor: e};
         }
         case ActionType.CLEAR_SELECTION: {
