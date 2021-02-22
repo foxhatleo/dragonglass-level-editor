@@ -5,7 +5,7 @@ import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
 import {Alert, Button, FormControl, Modal} from "react-bootstrap";
 
-const EXT = ".dgl";
+const EXT = ".ppl";
 const EXT_LEN = EXT.length;
 
 const nwConnector = connect(
@@ -39,7 +39,7 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
         setCreating(creating + 1);
         const fileMetadata = {
             "name": filename,
-            "mimeType": 'application/dragonglass-level',
+            "mimeType": 'application/panic-painter-level',
             "parents": [p.folderId]
         };
         gapi.client.drive.files.create({
