@@ -29,9 +29,8 @@ const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> 
     const [simulate, setSimulate] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(p.id);
         p.setFileId(p.id);
-    }, []);
+    }, [p.id]);
 
     return (
         <React.Fragment>
