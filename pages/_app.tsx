@@ -29,7 +29,7 @@ const MyApp: FunctionComponent<AppProps> = ({Component, pageProps}) => (
           }
           
           a:not(.btn) {
-            cursor: pointer;
+            cursor: pointer !important;
           }
           
           a:not(.btn):hover, a:not(.btn):active {

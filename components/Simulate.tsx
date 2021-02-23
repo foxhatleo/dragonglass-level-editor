@@ -121,6 +121,30 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
         }
     };
 
+    let helpText = "";
+    switch (mode) {
+        case 0: {
+            helpText = "Choose an action to begin.";
+            break;
+        }
+        case 1: {
+            helpText = "To scribble, click on any single item.";
+            break;
+        }
+        case 2: {
+            helpText = "To flick, click on an item. The one next to it will also be painted."
+            break;
+        }
+        case 3: {
+            if (startDrag < 0) {
+                helpText = "To drag, start by clicking an beginning item.";
+            } else {
+                helpText = "Now, click on the ending item. The area to be painted will be highlighted automatically.";
+            }
+            break;
+        }
+    }
+
     return (
         <Modal show={p.show} onHide={p.onClose} backdrop="static" dialogClassName="modal-bw">
             <Modal.Header closeButton><Modal.Title>Simulate playtesting</Modal.Title></Modal.Header>
@@ -152,6 +176,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                         colors={[p.colors.length > currentColor ? p.colors[currentColor] : p.colors[0]]}/></span>
                     <br/>Actions taken: {actionCount}
                     <br/>Clients lost due to incorrect actions: {lostClients}
+                    <p>{helpText}</p>
                     <p>
                         <Button variant={mode == 1 ? "primary" : "secondary"}
                                 onClick={() => setMode(1)}>Scribble</Button>
