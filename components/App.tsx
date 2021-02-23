@@ -51,9 +51,9 @@ const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> 
                     <TableArea/>
                     <div className={"text-center text-muted"}>
                         Made with ♥ by Wenhao "Leo" Liang<br/>
-                        Source available at <a href={"https://github.com/foxhatleo/panic-painter-level-editor/"}>GitHub</a>
+                        Source available at <a href={"https://github.com/foxhatleo/panic-painter-level-editor/"} target="_blank" rel="noreferrer noopener">GitHub</a>
                         <span className={"pl-3"}>
-                            <a href={"https://github.com/foxhatleo/panic-painter-level-editor/blob/master/PRIVACY.md"}>
+                            <a href={"https://github.com/foxhatleo/panic-painter-level-editor/blob/master/PRIVACY.md"} target="_blank" rel="noreferrer noopener">
                                 Privacy Policy
                             </a>
                         </span>
