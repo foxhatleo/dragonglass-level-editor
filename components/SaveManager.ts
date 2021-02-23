@@ -62,9 +62,12 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {
         const j = V1Representation.stringify(l);
         if (j != this.props.saved) return;
         this.setState({refreshing: true});
+        console.log("Refresh starts.");
         reload("save:refresh", this.props, () => {
+            console.log("Refresh ends.")
             this.setState((p) => ({...p, refreshing: false, refreshingError: 0}));
         }, (e) => {
+            console.log("Refresh error.");
             if (this.state.savingError > MAX_ERROR_ALLOWED) {
                 this.props.fail(["save:save", e]);
                 return;
