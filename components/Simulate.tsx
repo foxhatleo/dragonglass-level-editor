@@ -171,7 +171,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                     flex-grow: 1;
                     flex-shrink: 1;
                     flex-basis: 0;
-                    padding: .5rem;
+                    padding: .1rem;
                   }
                   .container-row > div > div {
                     padding: 1rem;
