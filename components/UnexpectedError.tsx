@@ -1,12 +1,16 @@
 import React, {SyntheticEvent} from "react";
-import {FormControl, Modal} from "react-bootstrap";
+import {Alert, FormControl, Modal} from "react-bootstrap";
 import {connect, ConnectedProps} from "react-redux";
 import RootState from "../redux/store/State";
 
 const connector = connect((s: RootState) => ({
+    fileId: s.fileId,
     ge: s.globalError
 }));
 const UnexpectedError: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
+    if (!!p.ge && JSON.parse(p.ge).error.body?.error?.code == 404 && p.fileId != "") {
+        window.location.replace(`https://drive.google.com/file/d/${p.fileId}/view`);
+    }
     return (
         <Modal backdrop="static" show={!!p.ge} onHide={() => {
         }}>
