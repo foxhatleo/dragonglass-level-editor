@@ -96,6 +96,9 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
             case 3: {
                 if (startDrag < 0) {
                     setStartDrag(i);
+                    const s = selected.concat();
+                    s[i] = 2;
+                    setSelected(s);
                 } else if (startDrag == i) {
                     setStartDrag(-1);
                     clearSelected();
