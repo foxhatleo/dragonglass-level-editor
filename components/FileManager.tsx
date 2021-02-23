@@ -82,7 +82,10 @@ const NewWindow = nwConnector(_NewWindow);
 const gFilesReady = () => (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files);
 
 export function reload(c: string, p: {fileId: string} & typeof Dispatcher, onDone: () => void, onFail?: (e: any) => void) {
-    if (!gFilesReady()) return;
+    if (!gFilesReady()) {
+        onDone();
+        return;
+    }
     Promise.all([
         gapi.client.drive.files.get({fileId: p.fileId, alt: "media"}),
         gapi.client.drive.files.get({fileId: p.fileId}),
