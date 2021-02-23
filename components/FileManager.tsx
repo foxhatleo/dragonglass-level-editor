@@ -13,16 +13,20 @@ const nwConnector = connect(
     (d) => bindActionCreators(Dispatcher, d),
 );
 
-const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & { folderId: string; show: boolean; }> = (p) => {
+type NewWindowProps = {
+    folderId: string;
+    show: boolean;
+}
+
+const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & NewWindowProps> = (p) => {
     const [filename, _setFilename] = useState<string>(EXT);
+    const [creating, setCreating] = useState<boolean>(false);
     const setFilename = (e: ChangeEvent<HTMLInputElement>) => {
         let fn = e.currentTarget.value.trim();
         fn = fn.replaceAll(/[#%<>&*{}?\/\\$+!`|=:@]/g, "");
         if (!fn.endsWith(EXT)) fn += EXT;
         _setFilename(fn);
     }
-
-    const [creating, setCreating] = useState<boolean>(false);
 
     const selectDetect = (e: SyntheticEvent<HTMLInputElement>) => {
         e.currentTarget.selectionEnd =
@@ -34,47 +38,52 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & { 
     const create = () => {
         if (creating) return;
         setCreating(true);
-        const fileMetadata = {
-            "name": filename,
-            "mimeType": 'application/panic-painter-level',
-            "parents": [p.folderId]
-        };
         gapi.client.drive.files.create({
-            resource: fileMetadata,
+            resource: {
+                "name": filename,
+                "mimeType": 'application/panic-painter-level',
+                "parents": [p.folderId]
+            },
         }).then((result) => {
-            const nfid = JSON.parse(result.body)["id"];
-            window.location.replace(window.location.href.split("?")[0] + "?state=" +
-                encodeURIComponent(JSON.stringify({action: "open", ids: [nfid]})));
-        }).catch((e) => {
-            p.fail(["create", e]);
-        });
+            const fid = JSON.parse(result.body)["id"];
+            window.location.replace(`/${fid}/edit`);
+        }).catch((e) =>  p.fail(["create", e]));
     };
 
     return (
-        <Modal backdrop="static" show={p.loggedIn && p.show} onHide={() => {
-        }}>
+        <Modal backdrop="static"
+               show={p.loggedIn && p.show}
+               onHide={() => {}}>
             <Modal.Header><Modal.Title>Enter file name</Modal.Title></Modal.Header>
             <Modal.Body>
                 Enter a name for your new level file.
-                <p><FormControl onSelect={selectDetect} disabled={creating}
-                                autoCapitalize="no" onChange={setFilename} value={filename}/></p>
+                <p>
+                    <FormControl onSelect={selectDetect}
+                                 disabled={creating}
+                                 autoCapitalize="no"
+                                 onChange={setFilename}
+                                 value={filename}/>
+                </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" disabled={filename.length <= EXT_LEN || creating} onClick={create}>
+                <Button
+                    variant="primary"
+                    disabled={filename.length <= EXT_LEN || creating}
+                    onClick={create}>
                     Continue
                 </Button>
             </Modal.Footer>
         </Modal>
     )
 };
-const NWC = nwConnector(NewWindow);
+const NewWindow = nwConnector(_NewWindow);
 
 const fmConnector = connect(
     (s: State) => ({fileId: s.fileId, loggedIn: s.loggedIn}),
     (d) => bindActionCreators(Dispatcher, d),
 );
 
-const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & { createMode: boolean; id: string; }> = (p) => {
+const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & { createMode: boolean; }> = (p) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [driveApiReady, setDriveApiReady] = useState<boolean>(false);
     const showFolder = p.createMode && driveApiReady;
@@ -82,8 +91,7 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
     // Monitor for Google Drive API for when it is ready.
     useEffect(() => {
         const i = setInterval(() => {
-            if (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files) {\
-                console.log("Drive API is ready.");
+            if (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files) {
                 setDriveApiReady(true);
                 clearInterval(i);
             }
@@ -92,7 +100,7 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
 
     // When everything is ready, load file.
     useEffect(() => {
-        if (p.loggedIn && driveApiReady && !p.createMode) {
+        if (p.fileId && p.loggedIn && driveApiReady && !p.createMode) {
             setLoading(true);
             Promise.all([
                 gapi.client.drive.files.get({fileId: p.fileId, alt: "media"}),
@@ -103,11 +111,11 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
                 p.parseData(media.body || "");
             }).catch((e) => p.fail(["open", e]));
         }
-    }, [driveApiReady, p.loggedIn]);
+    }, [p.fileId, driveApiReady, p.loggedIn]);
 
     return (
         <>
-            <NWC folderId={p.id} show={showFolder}/>
+            <NewWindow folderId={p.fileId} show={showFolder}/>
             <Modal backdrop="static" show={loading} onHide={() => {
             }}>
                 <Modal.Header><Modal.Title>Loading file...</Modal.Title></Modal.Header>

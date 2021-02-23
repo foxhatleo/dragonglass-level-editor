@@ -40,9 +40,12 @@ const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> 
             <AuthManager/>
             <FileManager createMode={p.createMode}/>
             <SaveManager/>
-            <ColorWindow show={showColor} onClose={() => setShowColor(false)}/>
-            <Simulate show={simulate} onClose={() => setSimulate(false)}/>
-            <Navbar onColor={() => setShowColor(true)} onSimulate={() => setSimulate(true)}/>
+            <ColorWindow show={showColor}
+                         onClose={() => setShowColor(false)}/>
+            <Simulate show={simulate}
+                      onClose={() => setSimulate(false)}/>
+            <Navbar onColor={() => setShowColor(true)}
+                    onSimulate={() => setSimulate(true)}/>
             <Container className={"mt-5 mb-3"}>
                 <TableArea/>
             </Container>
