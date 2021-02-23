@@ -76,16 +76,13 @@ const MyApp: FunctionComponent<AppProps> = ({Component, pageProps}) => (
           .form-control {
             padding: .125rem .25rem;
             border-radius: 0;
+            background: black;
+            color: white;
           }
 
           .modal-title {
             font-size: 1rem;
             font-weight: 400;
-          }
-
-          input, textarea {
-            background: black;
-            color: white;
           }
         `}</style>
         <Component {...pageProps} />

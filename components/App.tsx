@@ -49,6 +49,15 @@ const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> 
                         onSimulate={() => setSimulate(true)}/>
                 <Container className={"mt-5 mb-3"}>
                     <TableArea/>
+                    <div className={"text-center text-muted"}>
+                        Made with ♥ by Wenhao "Leo" Liang<br/>
+                        Source available at <a href={"https://github.com/foxhatleo/panic-painter-level-editor/"}>GitHub</a>
+                        <span className={"pl-2"}>
+                            <a href={"https://github.com/foxhatleo/panic-painter-level-editor/blob/master/PRIVACY.md"}>
+                                Privacy Policy
+                            </a>
+                        </span>
+                    </div>
                 </Container>
             </> : ""}
             <UnexpectedError/>
