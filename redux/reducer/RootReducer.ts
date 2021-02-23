@@ -69,6 +69,10 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
             return {...s, name: a.value};
         }
         case ActionType.PARSE_DATA: {
+            if (s.lastStored != V1Representation.stringify(s.level)) {
+                console.warn("Refused to parse data. Last stored does not match level.");
+                return s;
+            }
             let l;
             if (a.value.trim() == "") {
                 l = JSON.parse(JSON.stringify(defaultState.level));

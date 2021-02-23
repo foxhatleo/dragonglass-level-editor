@@ -79,6 +79,18 @@ const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & N
 };
 const NewWindow = nwConnector(_NewWindow);
 
+export function reload(c: string, p: {fileId: string} & typeof Dispatcher, onDone: () => void, onFail?: (e: any) => void) {
+    Promise.all([
+        gapi.client.drive.files.get({fileId: p.fileId, alt: "media"}),
+        gapi.client.drive.files.get({fileId: p.fileId}),
+    ]).then(([media, metadata]) => {
+        onDone();
+        p.setName(JSON.parse(metadata.body)["name"]);
+        p.parseData(media.body || "");
+        p.markReady();
+    }).catch((e) => typeof onFail === "function" ? onFail(e) : p.fail([c, e]));
+}
+
 const fmConnector = connect(
     (s: State) => ({fileId: s.fileId, loggedIn: s.loggedIn}),
     (d) => bindActionCreators(Dispatcher, d),
@@ -103,15 +115,7 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
     useEffect(() => {
         if (p.fileId && p.loggedIn && driveApiReady && !p.createMode) {
             setLoading(true);
-            Promise.all([
-                gapi.client.drive.files.get({fileId: p.fileId, alt: "media"}),
-                gapi.client.drive.files.get({fileId: p.fileId}),
-            ]).then(([media, metadata]) => {
-                setLoading(false);
-                p.setName(JSON.parse(metadata.body)["name"]);
-                p.parseData(media.body || "");
-                p.markReady();
-            }).catch((e) => p.fail(["open", e]));
+            reload("open", p, () => setLoading(false));
         }
     }, [p.fileId, driveApiReady, p.loggedIn]);
 

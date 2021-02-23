@@ -27,9 +27,9 @@ You may de-authorize this app at any time at [Google Account](https://myaccount.
 
 ## Diagnostic information
 The app does not send any information for diagnostic purposes. In the event of a failure, the app may ask you to send
-diagnostic information manually to the author. You can choose to refuse sending this information. It cannot be used to
-identify you.
+diagnostic information manually to the author. You can choose to refuse to send this information. If you choose to send
+it, it will only be used for diagnostic purposes, and the author will completely delete it afterwards.
 
 ## Liability
-The author(s) of this app shall bear no liability for any loss or damages due to your usage of this app, even if it is
+The author of this app shall bear no liability for any loss or damages due to your usage of this app, even if it is
 due to an error in the codebase. By using this app, you effectively acknowledge the risk and agree to bear all risks.

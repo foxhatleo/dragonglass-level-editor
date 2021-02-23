@@ -1,3 +1,5 @@
+import * as V1Representation from "../util/V1Representation";
+
 export type LevelData = {
     colors: string[];
     queues: number[][][];
@@ -15,22 +17,24 @@ declare type RootState = {
 };
 export default RootState;
 
+const defaultLevel: LevelData = {
+    colors: [
+        "#F44E3B",
+        "#FB9E00",
+        "#68BC00",
+        "#73D8FF",
+    ],
+    queues: [[], [], [], [], []],
+};
+
 const defaultState: RootState = {
     loggedIn: false,
     fileId: "",
     name: "",
     globalError: "",
-    lastStored: "",
+    lastStored: V1Representation.stringify(defaultLevel),
     ready: false,
     selected: [[0], [0], [0], [0], [0]],
-    level: {
-        colors: [
-            "#F44E3B",
-            "#FB9E00",
-            "#68BC00",
-            "#73D8FF",
-        ],
-        queues: [[], [], [], [], []],
-    },
+    level: defaultLevel,
 };
 export {defaultState};
