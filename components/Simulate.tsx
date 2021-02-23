@@ -17,12 +17,13 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
     const [actionCount, setActionCount] = useState<number>(0);
     const [lostClients, setLostClients] = useState<number>(0);
     const [mode, _setMode] = useState<number>(0);
-    const [selected, setSelected] = useState<boolean[]>([]);
+    const [selected, setSelected] = useState<number[]>([]);
     const [startDrag, setStartDrag] = useState<number>(-1);
+    const clearSelected = () => setSelected([...Array(p.queues.length)].map(_ => 0));
 
     const setMode = (i: number) => {
         _setMode(i);
-        setSelected([...Array(p.queues.length)].map(_ => false));
+        clearSelected();
         setStartDrag(-1);
     }
 
@@ -32,7 +33,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
         setActionCount(0);
         setLostClients(0);
         _setMode(0);
-        setSelected([...Array(p.queues.length)].map(_ => false));
+        clearSelected();
         setStartDrag(-1);
     };
 
@@ -43,22 +44,22 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
     const hover = (i: number) => {
         if (mode == 2) {
             const s = selected.concat();
-            s[i] = true;
-            if (i == s.length - 1 && i - 1 >= 0) s[i - 1] = true;
-            else if (i + 1 < s.length) s[i + 1] = true;
+            s[i] = 1;
+            if (i == s.length - 1 && i - 1 >= 0) s[i - 1] = 1;
+            else if (i + 1 < s.length) s[i + 1] = 1;
             setSelected(s);
         } else if (mode == 3 && startDrag >= 0) {
             const a = Math.min(i, startDrag);
             const b = Math.max(i, startDrag);
-            const s = [...Array(p.queues.length)].map(_ => false);
+            const s = [...Array(p.queues.length)].map(_ => 0);
             for (let i = a; i <= b; i++) {
-                s[i] = true;
+                s[i] = 2;
             }
             setSelected(s);
         }
     };
     const out = (_: number) => {
-        if (mode == 2) setSelected([...Array(p.queues.length)].map(_ => false));
+        if (mode == 2) clearSelected();
     };
     const baseClick = (i: number) => {
         setQueues((queues) => {
@@ -97,7 +98,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                     setStartDrag(i);
                 } else if (startDrag == i) {
                     setStartDrag(-1);
-                    setSelected([...Array(p.queues.length)].map(_ => false));
+                    clearSelected();
                 } else {
                     setActionCount(actionCount + 1);
                     const a = Math.min(i, startDrag);
@@ -106,7 +107,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                         baseClick(i);
                     }
                     setStartDrag(-1);
-                    setSelected([...Array(p.queues.length)].map(_ => false));
+                    clearSelected();
                 }
                 break;
             }
@@ -130,7 +131,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                 <div className={"container-row front pt-2"}>
                     {[...Array(queues.length)].map((_, i) => (
                         <div key={i}
-                             className={(selected[i] ? "selected" : "") + (queues[i].length == 0 ? " empty" : "")}>
+                             className={(selected[i] == 1 ? "selected" : (selected[i] == 2 ? "drag-selected" : "")) + (queues[i].length == 0 ? " empty" : "")}>
                             <div onClick={() => clickTile(i)} onMouseEnter={() => hover(i)} onMouseLeave={() => out(i)}>
                                 {queues[i].length == 0 ? "<empty>" :
                                     <ColorStrip colors={queues[i][0].map(id => p.colors[id])}/>}
@@ -176,6 +177,9 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                   }
                   .front > div:not(.empty) > div:hover, .front > div.selected:not(.empty) > div {
                     background: rgba(255, 255, 255, ${mode > 0 ? .25 : .1});
+                  }
+                  .front > div.drag-selected:not(.empty) > div:hover, .front > div.drag-selected:not(.empty) > div {
+                    background: rgba(255, 255, 255, ${mode == 3 ? 1 : .1});
                   }
                   div {
                     text-align: center;
