@@ -3,7 +3,7 @@ import {connect, ConnectedProps} from "react-redux";
 import State from "../redux/store/State";
 import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
-import {Alert, Button, FormControl, Modal} from "react-bootstrap";
+import {Button, FormControl, Modal} from "react-bootstrap";
 
 const EXT = ".ppl";
 const EXT_LEN = EXT.length;
@@ -22,7 +22,7 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
         _setFilename(fn);
     }
 
-    const [creating, setCreating] = useState<number>(0);
+    const [creating, setCreating] = useState<boolean>(false);
 
     const selectDetect = (e: SyntheticEvent<HTMLInputElement>) => {
         e.currentTarget.selectionEnd =
@@ -32,11 +32,8 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
     };
 
     const create = () => {
-        if (creating > 5) {
-            setCreating(-1);
-            return;
-        }
-        setCreating(creating + 1);
+        if (creating) return;
+        setCreating(true);
         const fileMetadata = {
             "name": filename,
             "mimeType": 'application/panic-painter-level',
@@ -48,26 +45,21 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
             const nfid = JSON.parse(result.body)["id"];
             window.location.replace(window.location.href.split("?")[0] + "?state=" +
                 encodeURIComponent(JSON.stringify({action: "open", ids: [nfid]})));
-        }).catch(() => {
-            setTimeout(create, 300);
+        }).catch((e) => {
+            p.fail("create", e);
         });
     };
 
     return (
         <Modal backdrop="static" show={p.loggedIn && p.show} onHide={() => {}}>
-            {creating < 0 ?
-                <Alert variant="danger">
-                    An error occurred. Try again later.
-                    If problem exists, contact Wenhao "Leo" Liang.
-                </Alert> : ""}
             <Modal.Header><Modal.Title>Enter file name</Modal.Title></Modal.Header>
             <Modal.Body>
                 Enter a name for your new level file.
-                <p><FormControl onSelect={selectDetect} disabled={creating > 0}
+                <p><FormControl onSelect={selectDetect} disabled={creating}
                                 autoCapitalize="no" onChange={setFilename} value={filename} /></p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" disabled={filename.length <= EXT_LEN || creating > 0} onClick={create}>
+                <Button variant="primary" disabled={filename.length <= EXT_LEN || creating} onClick={create}>
                     Continue
                 </Button>
             </Modal.Footer>
@@ -84,6 +76,7 @@ const fmConnector = connect(
 const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & {googleState: any;}> = (p) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [driveApiReady, setDriveApiReady] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
 
     const googleStateExists = typeof p.googleState === "object" && p.googleState !== null;
     const showFolder = (googleStateExists &&
@@ -119,12 +112,8 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
                 setLoading(false);
                 p.setName(JSON.parse(res2.body)["name"]);
                 p.parseData(res.body || "");
-            }).catch(() => {
-                setTimeout(loadFile, 300);
-            });
-        }).catch(() => {
-            setTimeout(loadFile, 300);
-        });
+            }).catch((e) => p.fail(["open:metadata", e]));
+        }).catch((e) => p.fail(["open:media", e]));
     };
 
     useEffect(() => {

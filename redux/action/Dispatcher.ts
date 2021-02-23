@@ -20,3 +20,4 @@ export const ctrlClick = updater<CellInd>(ActionType.CTRL_CLICK);
 export const shiftClick = updater<CellInd>(ActionType.SHIFT_CLICK);
 export const singleClick = updater<CellInd>(ActionType.SINGLE_CLICK);
 export const parseData = updater<string>(ActionType.PARSE_DATA);
+export const fail = updater<[string, any]>(ActionType.FAIL);

@@ -34,10 +34,9 @@ const connector = connect(
 
 const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (p) => {
     const [stage, setStage] = useState<AuthManagerStage>(AuthManagerStage.LOAD_AUTH);
-    const fail = (e: any) => {
+    const fail = (c: string, e: any) => {
         setStage(AuthManagerStage.ERROR);
-        console.error(`InitManager error. Current stage: ${stage}`);
-        if (e) console.error(e);
+        p.fail(["auth:" + c, e]);
     }
 
     useEffect(() => {
@@ -45,7 +44,7 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
             switch (stage) {
                 case AuthManagerStage.LOAD_AUTH: {
                     gapi.load("client:auth2", {
-                        onerror: fail,
+                        onerror: (e: any) => fail("loadAuth", e),
                         // callback: () => {
                             // gapi.load('drive-share', {
                             //     onerror: fail,
@@ -65,12 +64,12 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
                         gapi.auth2.getAuthInstance().isSignedIn.listen(p.updateSignInStatus);
                         p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
                         setStage(AuthManagerStage.AUTH_READY);
-                    }, fail);
+                    }, (e: any) => fail("initClient", e));
                     break;
                 }
             }
         } catch (e) {
-            fail(e);
+            fail("uncaught", e);
         }
     }, [stage]);
 

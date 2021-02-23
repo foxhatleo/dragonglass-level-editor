@@ -8,6 +8,7 @@ import {Container} from "react-bootstrap";
 import Navbar from "./Navbar";
 import ColorWindow from "./ColorWindow";
 import Simulate from "./Simulate";
+import UnexpectedError from "./UnexpectedError";
 
 const App: React.FunctionComponent = () => {
     const [googleState, setGoogleState] = useState<any | null | undefined>(undefined);
@@ -36,6 +37,7 @@ const App: React.FunctionComponent = () => {
             <Container className={"mt-5 mb-3"}>
                 <TableArea />
             </Container>
+            <UnexpectedError />
         </React.Fragment>
     );
 };

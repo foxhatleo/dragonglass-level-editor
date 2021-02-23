@@ -14,5 +14,6 @@ enum ActionType {
     MARK_READY,
     MARK_SAVED,
     SET_COLORS,
+    FAIL,
 }
 export default ActionType;

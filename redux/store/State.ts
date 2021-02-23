@@ -15,6 +15,7 @@ declare type RootState = {
     level: LevelData;
     name: string;
     editor: EditorState;
+    globalError: string;
 };
 export default RootState;
 
@@ -22,6 +23,7 @@ const defaultState: RootState = {
     loggedIn: false,
     fileId: "",
     name: "",
+    globalError: "",
     level: {
         colors: [
             "#F44E3B",

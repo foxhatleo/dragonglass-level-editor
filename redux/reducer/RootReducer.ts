@@ -152,6 +152,21 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
             }
             return temp_st;
         }
+        case ActionType.FAIL: {
+            let ebody = null;
+            if (typeof a.value[1] !== "undefined" && a.value[1].body) {
+                ebody = a.value[1].body.toString();
+                try {
+                    ebody = JSON.parse(ebody);
+                } catch (e) {}
+            }
+            return {...s, globalError: JSON.stringify({
+                    reporter: a.value[0],
+                    state: s,
+                    error: typeof a.value[1] !== "undefined" ? a.value[1].toString() : null,
+                    body: ebody
+                })};
+        }
     }
     return s;
 };
