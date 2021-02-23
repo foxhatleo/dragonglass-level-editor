@@ -13,6 +13,7 @@ const connector = connect(
 
 const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { show: boolean; onClose: () => void; }> = (p) => {
     const [queues, setQueues] = useState<number[][][]>([[]]);
+    const [colors, setColors] = useState<string[]>(["#000000"]);
     const [currentColor, setCurrentColor] = useState<number>(0);
     const [actionCount, setActionCount] = useState<number>(0);
     const [lostClients, setLostClients] = useState<number>(0);
@@ -32,6 +33,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
         setCurrentColor(Math.floor(p.colors.length * Math.random()));
         setActionCount(0);
         setLostClients(0);
+        setColors(p.colors);
         _setMode(0);
         clearSelected();
         setStartDrag(-1);
@@ -154,7 +156,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                         <div key={i}>
                             <div>
                                 {queues[i].length <= 1 ? "<empty>" :
-                                    <ColorStrip colors={queues[i][1].map(id => p.colors[id])}/>}
+                                    <ColorStrip colors={queues[i][1].map(id => colors[id])}/>}
                             </div>
                         </div>
                     ))}
@@ -165,7 +167,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                              className={(selected[i] ? "selected" : "") + (queues[i].length == 0 ? " empty" : "")}>
                             <div onClick={() => clickTile(i)} onMouseEnter={() => hover(i)} onMouseLeave={() => out(i)}>
                                 {queues[i].length == 0 ? "<empty>" :
-                                    <ColorStrip colors={queues[i][0].map(id => p.colors[id])}/>}
+                                    <ColorStrip colors={queues[i][0].map(id => colors[id])}/>}
                             </div>
                         </div>
                     ))}
@@ -173,7 +175,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                 <div className={"pt-2"}>
                     Current paintbrush:
                     <span className={"pl-1"}><ColorStrip
-                        colors={[p.colors.length > currentColor ? p.colors[currentColor] : p.colors[0]]}/></span>
+                        colors={[colors.length > currentColor ? colors[currentColor] : colors[0]]}/></span>
                     <br/>Actions taken: {actionCount}
                     <br/>Clients lost due to incorrect actions: {lostClients}
                     <p>{helpText}</p>
