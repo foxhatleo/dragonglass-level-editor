@@ -17,6 +17,7 @@ const ColorStrip: React.FunctionComponent<{ colors: string[]; }> = (p) => (
           span {
             width: 15px;
             height: 15px;
+            border-radius: 3px solid white;
           }
 
           li:not(:first-child) {
