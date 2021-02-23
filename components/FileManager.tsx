@@ -79,7 +79,10 @@ const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & N
 };
 const NewWindow = nwConnector(_NewWindow);
 
+const gFilesReady = () => (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files);
+
 export function reload(c: string, p: {fileId: string} & typeof Dispatcher, onDone: () => void, onFail?: (e: any) => void) {
+    if (!gFilesReady()) return;
     Promise.all([
         gapi.client.drive.files.get({fileId: p.fileId, alt: "media"}),
         gapi.client.drive.files.get({fileId: p.fileId}),
@@ -104,7 +107,7 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
     // Monitor for Google Drive API for when it is ready.
     useEffect(() => {
         const i = setInterval(() => {
-            if (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files) {
+            if (gFilesReady()) {
                 setDriveApiReady(true);
                 clearInterval(i);
             }

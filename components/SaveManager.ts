@@ -26,6 +26,7 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {
     refreshingError: number;
 }> {
     private interval: ReturnType<typeof setTimeout> | undefined;
+    private interval2: ReturnType<typeof setTimeout> | undefined;
 
     constructor(p: ConnectedProps<typeof connector>) {
         super(p);
@@ -78,11 +79,12 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {
 
     componentDidMount() {
         this.interval = setInterval(() => this.update(), 200);
-        this.interval = setInterval(() => this.refresh(), 1000);
+        this.interval2 = setInterval(() => this.refresh(), 1000);
     }
 
     componentWillUnmount() {
         if (typeof this.interval !== undefined) clearInterval(this.interval as any);
+        if (typeof this.interval2 !== undefined) clearInterval(this.interval2 as any);
     }
 
     render() {
