@@ -47,7 +47,7 @@ const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & { queueI
                     -ms-user-select: none;
                     -webkit-user-select: none;
                     padding: 1rem .2rem;
-                    color: ${p.editorSelected[p.queueInd][p.customerInd] ? "black" : "white"};
+                    color: white;
                     background: ${p.editorSelected[p.queueInd][p.customerInd] ? "var(--primary)" : "rgba(255, 255, 255, .1)"};
                   }
 

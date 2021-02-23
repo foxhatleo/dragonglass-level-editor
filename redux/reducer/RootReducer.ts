@@ -84,7 +84,7 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                 const qsel = [];
                 const qc = l.queues[q].length;
                 for (let c = 0; c < qc + 1; c++) {
-                    qsel.push(0);
+                    qsel.push(q < s.level.queues.length ? (c < s.level.queues[q].length + 1 ? s.selected[q][c] : 0) : 0);
                 }
                 sel.push(qsel);
             }
