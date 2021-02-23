@@ -194,7 +194,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                   }
 
                   .front > div:not(.empty) > div:hover, .front > div.selected:not(.empty) > div {
-                    background: rgba(255, 255, 255, ${mode > 0 ? 1 : .1});
+                    background: var(--primary);
                   }
 
                   div {

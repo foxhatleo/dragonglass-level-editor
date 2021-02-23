@@ -47,13 +47,14 @@ const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & N
         }).then((result) => {
             const fid = JSON.parse(result.body)["id"];
             window.location.replace(`/${fid}/edit`);
-        }).catch((e) =>  p.fail(["create", e]));
+        }).catch((e) => p.fail(["create", e]));
     };
 
     return (
         <Modal backdrop="static"
                show={p.loggedIn && p.show}
-               onHide={() => {}}>
+               onHide={() => {
+               }}>
             <Modal.Header><Modal.Title>Enter file name</Modal.Title></Modal.Header>
             <Modal.Body>
                 Enter a name for your new level file.

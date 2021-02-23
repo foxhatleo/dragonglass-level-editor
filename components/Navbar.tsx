@@ -9,12 +9,14 @@ import * as V1Representation from "../redux/util/V1Representation";
 
 const connector = connect(
     (s: State) => ({
-        name: s.name, colorLength: s.level.colors.length, colors: s.level.colors,
-        selected: s.editor.selected,
+        name: s.name,
+        colorLength: s.level.colors.length,
+        colors: s.level.colors,
+        selected: s.selected,
         queues: s.level.queues,
         level: s.level,
-        saved: s.editor.lastStored,
-        anySelected: s.editor.selected.reduce((p, q) => (p || q.reduce((p, c) => p || (c > 0), false)), false)
+        saved: s.lastStored,
+        anySelected: s.selected.reduce((p, q) => (p || q.reduce((p, c) => p || (c > 0), false)), false)
     }),
     (d) => bindActionCreators(Dispatcher, d),
 );

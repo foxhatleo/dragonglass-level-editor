@@ -9,9 +9,9 @@ import * as V1Representation from "../redux/util/V1Representation";
 const connector = connect(
     (s: State) => ({
         level: s.level,
-        saved: s.editor.lastStored,
+        saved: s.lastStored,
         fileId: s.fileId,
-        ready: s.editor.ready
+        ready: s.ready,
     }),
     (d) => bindActionCreators(Dispatcher, d),
 );

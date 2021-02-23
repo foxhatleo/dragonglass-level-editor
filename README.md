@@ -18,7 +18,7 @@ yarn dev
 ```
 
 You will also need to set up a Google Cloud Platform (GCP) account to allow communication with Google's server. The
-configuration file is stored at `config/Google.ts`.
+configuration file is stored at [config/Google.ts](config/Google.ts).
 
 ## Privacy Policy
 

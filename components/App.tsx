@@ -15,7 +15,7 @@ import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
 
 const connector = connect(
-    (s: RootState) => ({ready: s.editor.ready, name: s.name, fileId: s.fileId}),
+    (s: RootState) => ({ready: s.ready, name: s.name, fileId: s.fileId}),
     (d) => bindActionCreators(Dispatcher, d),
 );
 

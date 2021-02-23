@@ -4,7 +4,8 @@ import {Modal} from "react-bootstrap";
 
 const Home: NextPage = () => (
     <>
-        <Modal backdrop="static" show={true} onHide={() => {}}>
+        <Modal backdrop="static" show={true} onHide={() => {
+        }}>
             <Modal.Header><Modal.Title>Invalid request</Modal.Title></Modal.Header>
             <Modal.Body>
                 Please open a level file or create a new one from Google Drive.
@@ -13,7 +14,7 @@ const Home: NextPage = () => (
     </>
 );
 
-Home.getInitialProps = async (appContext ) => {
+Home.getInitialProps = async (appContext) => {
     const fail = () => {
         appContext.res?.writeHead(400);
         appContext.res?.write("This is not a valid state object.");

@@ -4,6 +4,7 @@ import * as Dispatcher from "../redux/action/Dispatcher";
 import {connect, ConnectedProps} from "react-redux";
 import {bindActionCreators} from "redux";
 import State from "../redux/store/State";
+import * as Config from "../config/Google";
 
 enum AuthManagerStage {
     ERROR,
@@ -11,24 +12,6 @@ enum AuthManagerStage {
     INIT_CLIENT,
     AUTH_READY,
 }
-
-// Client ID and API key from the Developer Console
-const CLIENT_ID = "656662885342-aku8gdtahr0g4a9lu6rieetf8k9kegfp.apps.googleusercontent.com";
-const API_KEY = "AIzaSyBbvDvbHa_Fv7Sb4qM449_hlnN3yWg0eK0";
-
-// Array of API discovery doc URLs for APIs used by the quickstart
-const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-
-// Authorization scopes required by the API; multiple scopes can be
-// included, separated by spaces.
-const SCOPES = [
-    "https://www.googleapis.com/auth/userinfo.email",
-    "https://www.googleapis.com/auth/userinfo.profile",
-    "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/drive.appdata",
-    "https://www.googleapis.com/auth/drive.metadata",
-    "https://www.googleapis.com/auth/drive.file",
-].join(" ");
 
 const connector = connect(
     (s: State) => ({loggedIn: s.loggedIn}),
@@ -48,21 +31,16 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
                 case AuthManagerStage.LOAD_AUTH: {
                     gapi.load("client:auth2", {
                         onerror: (e: any) => fail("loadAuth", e),
-                        // callback: () => {
-                        // gapi.load('drive-share', {
-                        //     onerror: fail,
-                        callback: () => setStage(AuthManagerStage.INIT_CLIENT)
-                        // });
-                        // },
+                        callback: () => setStage(AuthManagerStage.INIT_CLIENT),
                     });
                     break;
                 }
                 case AuthManagerStage.INIT_CLIENT: {
                     gapi.client.init({
-                        apiKey: API_KEY,
-                        clientId: CLIENT_ID,
-                        discoveryDocs: DISCOVERY_DOCS,
-                        scope: SCOPES
+                        apiKey: Config.API_KEY,
+                        clientId: Config.CLIENT_ID,
+                        discoveryDocs: Config.DISCOVERY_DOCS,
+                        scope: Config.SCOPES.join(" "),
                     }).then(() => {
                         gapi.auth2.getAuthInstance().isSignedIn.listen(p.updateSignInStatus);
                         p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
@@ -78,9 +56,7 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
 
     const logIn = () => {
         gapi.auth2.getAuthInstance().signIn()
-            .then(() => {
-                p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get())
-            });
+            .then(() => {p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get())});
     };
 
     const header = () => {
@@ -110,6 +86,11 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
                             Gmail, Contacts, Calendar, etc).
                         </p>
                         <p>
+                            <strong>Privacy policy</strong>
+                            The privacy policy of this app is available
+                            <a href={"https://github.com/foxhatleo/panic-painter-level-editor/blob/master/PRIVACY.md"}>here</a>.
+                        </p>
+                        <p>
                             <strong>If you are stuck on this screen</strong><br/>
                             Try to clear cookies and cache of your browser. If problem persists, try disabling browser
                             extensions or settings that limit third-party cookies.
@@ -120,15 +101,14 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
     };
 
     return (
-        <Modal backdrop="static" show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {
-        }}>
+        <Modal backdrop="static" show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {}}>
             <Modal.Header><Modal.Title>{header()}</Modal.Title></Modal.Header>
             <Modal.Body>{content()}</Modal.Body>
             {stage == AuthManagerStage.AUTH_READY ? <Modal.Footer>
                 <Button onClick={logIn} variant="primary" disabled={stage != AuthManagerStage.AUTH_READY}>
                     Authorize
                 </Button>
-            </Modal.Footer> : <></>}
+            </Modal.Footer> : ""}
         </Modal>
     );
 };

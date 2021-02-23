@@ -3,19 +3,15 @@ export type LevelData = {
     queues: number[][][];
 };
 
-export type EditorState = {
-    selected: number[][];
-    lastStored: string;
-    ready: boolean;
-};
-
 declare type RootState = {
     loggedIn: boolean;
     fileId: string;
     level: LevelData;
     name: string;
-    editor: EditorState;
     globalError: string;
+    selected: number[][];
+    lastStored: string;
+    ready: boolean;
 };
 export default RootState;
 
@@ -24,6 +20,9 @@ const defaultState: RootState = {
     fileId: "",
     name: "",
     globalError: "",
+    lastStored: "",
+    ready: false,
+    selected: [[0], [0], [0], [0], [0]],
     level: {
         colors: [
             "#F44E3B",
@@ -32,11 +31,6 @@ const defaultState: RootState = {
             "#73D8FF",
         ],
         queues: [[], [], [], [], []],
-    },
-    editor: {
-        lastStored: "",
-        ready: false,
-        selected: [[0], [0], [0], [0], [0]],
     },
 };
 export {defaultState};

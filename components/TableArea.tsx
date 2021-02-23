@@ -7,7 +7,11 @@ import {Alert, Button} from "react-bootstrap";
 import ColorStrip from "./ColorStrip";
 
 const connector = connect(
-    (s: State) => ({colors: s.level.colors, queues: s.level.queues, editorSelected: s.editor.selected}),
+    (s: State) => ({
+        colors: s.level.colors,
+        queues: s.level.queues,
+        editorSelected: s.selected,
+    }),
     (d) => bindActionCreators(Dispatcher, d),
 );
 
@@ -44,11 +48,11 @@ const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & { queueI
                     -webkit-user-select: none;
                     padding: 1rem .2rem;
                     color: ${p.editorSelected[p.queueInd][p.customerInd] ? "black" : "white"};
-                    background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? 1 : .2});
+                    background: ${p.editorSelected[p.queueInd][p.customerInd] ? "var(--primary)" : "rgba(255, 255, 255, .1)"};
                   }
 
                   .area:hover, .area:active {
-                    background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? 1 : .35});
+                    background: ${p.editorSelected[p.queueInd][p.customerInd] ? "var(--primary)" : "rgba(255, 255, 255, .3)"};
                   }
                 `}</style>
             </div>

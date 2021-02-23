@@ -82,6 +82,11 @@ const MyApp: FunctionComponent<AppProps> = ({Component, pageProps}) => (
             font-size: 1rem;
             font-weight: 400;
           }
+
+          input, textarea {
+            background: black;
+            color: white;
+          }
         `}</style>
         <Component {...pageProps} />
     </>
