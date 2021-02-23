@@ -27,6 +27,14 @@ const MyApp: FunctionComponent<AppProps> = ({Component, pageProps}) => (
             cursor: default !important;
             user-select: none;
           }
+          
+          a:not(.btn) {
+            cursor: pointer;
+          }
+          
+          a:not(.btn):hover, a:not(.btn):active {
+            color: var(--primary);
+          }
 
           p {
             margin-top: 1rem;
