@@ -175,7 +175,6 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                     stack = a.value[1].details.toString();
                 }
             }
-            debugger;
             return {
                 ...s, globalError: JSON.stringify({
                     reporter: a.value[0],
