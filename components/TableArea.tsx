@@ -43,6 +43,7 @@ const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & {queueIn
                     -ms-user-select: none;
                     -webkit-user-select: none;
                     padding: 1rem .2rem;
+                    color: ${p.editorSelected[p.queueInd][p.customerInd] ? "black" : "white"};
                     background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? 1 : .2});
                   }
                   .area:hover, .area:active {
