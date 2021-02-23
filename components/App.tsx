@@ -15,7 +15,7 @@ import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
 
 const connector = connect(
-    (s: RootState) => ({name: s.name, fileId: s.fileId}),
+    (s: RootState) => ({ready: s.editor.ready, name: s.name, fileId: s.fileId}),
     (d) => bindActionCreators(Dispatcher, d),
 );
 
@@ -40,15 +40,17 @@ const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> 
             <AuthManager/>
             <FileManager createMode={p.createMode}/>
             <SaveManager/>
-            <ColorWindow show={showColor}
-                         onClose={() => setShowColor(false)}/>
-            <Simulate show={simulate}
-                      onClose={() => setSimulate(false)}/>
-            <Navbar onColor={() => setShowColor(true)}
-                    onSimulate={() => setSimulate(true)}/>
-            <Container className={"mt-5 mb-3"}>
-                <TableArea/>
-            </Container>
+            {p.ready ? <>
+                <ColorWindow show={showColor}
+                             onClose={() => setShowColor(false)}/>
+                <Simulate show={simulate}
+                          onClose={() => setSimulate(false)}/>
+                <Navbar onColor={() => setShowColor(true)}
+                        onSimulate={() => setSimulate(true)}/>
+                <Container className={"mt-5 mb-3"}>
+                    <TableArea/>
+                </Container>
+            </> : ""}
             <UnexpectedError/>
         </React.Fragment>
     );

@@ -109,6 +109,7 @@ const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & 
                 setLoading(false);
                 p.setName(JSON.parse(metadata.body)["name"]);
                 p.parseData(media.body || "");
+                p.markReady();
             }).catch((e) => p.fail(["open", e]));
         }
     }, [p.fileId, driveApiReady, p.loggedIn]);
