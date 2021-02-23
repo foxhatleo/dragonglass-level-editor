@@ -50,6 +50,12 @@ const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & N
         }).catch((e) => p.fail(["create", e]));
     };
 
+    const createKeyUp = (e: KeyboardEvent) => {
+        if (e.key === "Enter" || e.keyCode === 13) {
+            create();
+        }
+    };
+
     return (
         <Modal backdrop="static"
                show={p.loggedIn && p.show}
@@ -63,6 +69,7 @@ const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & N
                                  disabled={creating}
                                  autoCapitalize="no"
                                  onChange={setFilename}
+                                 onKeyUp={createKeyUp}
                                  value={filename}/>
                 </p>
             </Modal.Body>

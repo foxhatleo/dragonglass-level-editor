@@ -87,6 +87,11 @@ const MyApp: FunctionComponent<AppProps> = ({Component, pageProps}) => (
             background: black;
             color: white;
           }
+          
+          .form-control: focus {
+            background: #191919;
+            color: white;
+          }
 
           .modal-title {
             font-size: 1rem;
