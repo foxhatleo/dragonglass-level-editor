@@ -36,7 +36,7 @@ const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & N
     };
 
     const create = () => {
-        if (creating) return;
+        if (filename.length <= EXT_LEN || creating) return;
         setCreating(true);
         gapi.client.drive.files.create({
             resource: {
@@ -50,7 +50,7 @@ const _NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & N
         }).catch((e) => p.fail(["create", e]));
     };
 
-    const createKeyUp = (e: KeyboardEvent) => {
+    const createKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" || e.keyCode === 13) {
             create();
         }

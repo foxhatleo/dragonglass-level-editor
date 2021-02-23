@@ -88,7 +88,7 @@ const MyApp: FunctionComponent<AppProps> = ({Component, pageProps}) => (
             color: white;
           }
           
-          .form-control: focus {
+          .form-control:focus {
             background: #191919;
             color: white;
           }
