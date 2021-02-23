@@ -46,7 +46,7 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
             window.location.replace(window.location.href.split("?")[0] + "?state=" +
                 encodeURIComponent(JSON.stringify({action: "open", ids: [nfid]})));
         }).catch((e) => {
-            p.fail("create", e);
+            p.fail(["create", e]);
         });
     };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {SyntheticEvent} from "react";
 import {FormControl, Modal} from "react-bootstrap";
 import {connect, ConnectedProps} from "react-redux";
 import RootState from "../redux/store/State";
@@ -13,7 +13,7 @@ const UnexpectedError: React.FunctionComponent<ConnectedProps<typeof connector>>
             <Modal.Body>
                 Try refreshing. If problem persists, please copy and paste the following information and send it
                 to Leo for debugging.
-                <FormControl rows={5} as={"textarea"} className={"mt-2"} value={p.ge} onChange={() => {}} onSelect={(e) => {
+                <FormControl rows={5} as={"textarea"} className={"mt-2"} value={p.ge} onChange={() => {}} onSelect={(e: SyntheticEvent<HTMLTextAreaElement>) => {
                     e.currentTarget.selectionStart = 0;
                     e.currentTarget.selectionEnd = p.ge.length;
                 }} />
