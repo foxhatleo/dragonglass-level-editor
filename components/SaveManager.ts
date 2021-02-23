@@ -36,7 +36,7 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {
     update(): void {
         const l = this.props.level;
         const j = V1Representation.stringify(l);
-        if (this.state.saving || !this.props.ready || j == this.props.saved) return;
+        if (this.state.saving || !this.props.ready || j == this.props.saved || this.state.savingError > MAX_ERROR_ALLOWED) return;
         this.setState({saving: true});
         gapi.client.request({
             path: "/upload/drive/v3/files/" + this.props.fileId,
@@ -58,18 +58,15 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {
     }
 
     refresh(): void {
-        if (this.state.saving || this.state.refreshing) return;
+        if (this.state.saving || this.state.refreshing || this.state.refreshingError > MAX_ERROR_ALLOWED) return;
         const l = this.props.level;
         const j = V1Representation.stringify(l);
         if (j != this.props.saved) return;
         this.setState({refreshing: true});
-        console.log("Refresh starts.");
         reload("save:refresh", this.props, () => {
-            console.log("Refresh ends.")
             this.setState((p) => ({...p, refreshing: false, refreshingError: 0}));
         }, (e) => {
-            console.log("Refresh error.");
-            if (this.state.savingError > MAX_ERROR_ALLOWED) {
+            if (this.state.refreshingError > MAX_ERROR_ALLOWED) {
                 this.props.fail(["save:save", e]);
                 return;
             }
