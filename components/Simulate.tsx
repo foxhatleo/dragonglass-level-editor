@@ -17,9 +17,9 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
     const [actionCount, setActionCount] = useState<number>(0);
     const [lostClients, setLostClients] = useState<number>(0);
     const [mode, _setMode] = useState<number>(0);
-    const [selected, setSelected] = useState<number[]>([]);
+    const [selected, setSelected] = useState<boolean[]>([]);
     const [startDrag, setStartDrag] = useState<number>(-1);
-    const clearSelected = () => setSelected([...Array(p.queues.length)].map(_ => 0));
+    const clearSelected = () => setSelected([...Array(p.queues.length)].map(_ => false));
 
     const setMode = (i: number) => {
         _setMode(i);
@@ -43,17 +43,19 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
 
     const hover = (i: number) => {
         if (mode == 2) {
-            const s = selected.concat();
-            s[i] = 1;
-            if (i == s.length - 1 && i - 1 >= 0) s[i - 1] = 1;
-            else if (i + 1 < s.length) s[i + 1] = 1;
-            setSelected(s);
+            setSelected((selected) => {
+                const s = selected.concat();
+                s[i] = true;
+                if (i == s.length - 1 && i - 1 >= 0) s[i - 1] = true;
+                else if (i + 1 < s.length) s[i + 1] = true;
+                return s;
+            });
         } else if (mode == 3 && startDrag >= 0) {
             const a = Math.min(i, startDrag);
             const b = Math.max(i, startDrag);
-            const s = [...Array(p.queues.length)].map(_ => 0);
+            const s = [...Array(p.queues.length)].map(_ => false);
             for (let i = a; i <= b; i++) {
-                s[i] = 2;
+                s[i] = true;
             }
             setSelected(s);
         }
@@ -83,12 +85,12 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
     const clickTile = (i: number) => {
         switch (mode) {
             case 1: {
-                setActionCount(actionCount + 1);
+                setActionCount(a => a + 1);
                 baseClick(i);
                 break;
             }
             case 2: {
-                setActionCount(actionCount + 1);
+                setActionCount(a => a + 1);
                 baseClick(i);
                 baseClick(i >= queues.length - 1 ? i - 1 : i + 1);
                 break;
@@ -96,14 +98,16 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
             case 3: {
                 if (startDrag < 0) {
                     setStartDrag(i);
-                    const s = selected.concat();
-                    s[i] = 2;
-                    setSelected(s);
+                    setSelected((selected) => {
+                        const s = selected.concat();
+                        s[i] = true;
+                        return s;
+                    });
                 } else if (startDrag == i) {
                     setStartDrag(-1);
                     clearSelected();
                 } else {
-                    setActionCount(actionCount + 1);
+                    setActionCount(a => a + 1);
                     const a = Math.min(i, startDrag);
                     const b = Math.max(i, startDrag);
                     for (let i = a; i <= b; i++) {
@@ -134,7 +138,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                 <div className={"container-row front pt-2"}>
                     {[...Array(queues.length)].map((_, i) => (
                         <div key={i}
-                             className={(selected[i] == 1 ? "selected" : (selected[i] == 2 ? "drag-selected" : "")) + (queues[i].length == 0 ? " empty" : "")}>
+                             className={(selected[i] ? "selected" : "") + (queues[i].length == 0 ? " empty" : "")}>
                             <div onClick={() => clickTile(i)} onMouseEnter={() => hover(i)} onMouseLeave={() => out(i)}>
                                 {queues[i].length == 0 ? "<empty>" :
                                     <ColorStrip colors={queues[i][0].map(id => p.colors[id])}/>}
@@ -151,7 +155,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                 <Button variant={mode == 1 ? "primary" : "secondary"} onClick={() => setMode(1)}>Scribble</Button>
                 <Button variant={mode == 2 ? "primary" : "secondary"} onClick={() => setMode(2)}>Flick</Button>
                 <Button variant={mode == 3 ? "primary" : "secondary"} onClick={() => setMode(3)}>Drag</Button>
-            {p.colors.map((c, i) => <Button variant="secondary" key={i} onClick={() => setCurrentColor(i)}><ColorStrip colors={[c]} /></Button>)}
+                {p.colors.map((c, i) => <Button variant="secondary" key={i} onClick={() => {setActionCount(a => a + 1); setCurrentColor(i)}}><ColorStrip colors={[c]} /></Button>)}
                 </p>
                 </div>
                 <style jsx>{`
@@ -179,10 +183,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                     pointer-events: none;
                   }
                   .front > div:not(.empty) > div:hover, .front > div.selected:not(.empty) > div {
-                    background: rgba(255, 255, 255, ${mode > 0 ? .25 : .1});
-                  }
-                  .front > div.drag-selected:not(.empty) > div:hover, .front > div.drag-selected:not(.empty) > div {
-                    background: rgba(255, 255, 255, ${mode == 3 ? 1 : .1});
+                    background: rgba(255, 255, 255, ${mode > 0 ? 1 : .1});
                   }
                   div {
                     text-align: center;
