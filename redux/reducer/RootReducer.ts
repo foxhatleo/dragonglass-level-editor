@@ -127,7 +127,11 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
             return {...s, level: {...s.level, queues}, editor: {...s.editor, selected}};
         }
         case ActionType.ADD_QUEUE: {
-            return {...s, level: {...s.level, queues: [...s.level.queues, []]}, editor: {...s.editor, selected: [...s.editor.selected, [0]]}};
+            return {
+                ...s,
+                level: {...s.level, queues: [...s.level.queues, []]},
+                editor: {...s.editor, selected: [...s.editor.selected, [0]]}
+            };
         }
         case ActionType.REMOVE_QUEUE: {
             const queues = s.level.queues;
@@ -153,19 +157,37 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
             return temp_st;
         }
         case ActionType.FAIL: {
-            let ebody = null;
-            if (typeof a.value[1] !== "undefined" && a.value[1].body) {
-                ebody = a.value[1].body.toString();
-                try {
-                    ebody = JSON.parse(ebody);
-                } catch (e) {}
+            let body = null;
+            let stack = null;
+            let details = null;
+            if (typeof a.value[1] !== "undefined") {
+                if (a.value[1].body) {
+                    body = a.value[1].body.toString();
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+                    }
+                }
+                if (a.value[1].stack) {
+                    stack = a.value[1].stack.toString();
+                }
+                if (a.value[1].details) {
+                    stack = a.value[1].details.toString();
+                }
             }
-            return {...s, globalError: JSON.stringify({
+            debugger;
+            return {
+                ...s, globalError: JSON.stringify({
                     reporter: a.value[0],
                     state: s,
-                    error: typeof a.value[1] !== "undefined" ? a.value[1].toString() : null,
-                    body: ebody
-                })};
+                    error: {
+                        toString: typeof a.value[1] !== "undefined" ? a.value[1].toString() : null,
+                        stack,
+                        body,
+                        details
+                    }
+                })
+            };
         }
     }
     return s;

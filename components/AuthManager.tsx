@@ -49,10 +49,10 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
                     gapi.load("client:auth2", {
                         onerror: (e: any) => fail("loadAuth", e),
                         // callback: () => {
-                            // gapi.load('drive-share', {
-                            //     onerror: fail,
-                                callback: () => setStage(AuthManagerStage.INIT_CLIENT)
-                            // });
+                        // gapi.load('drive-share', {
+                        //     onerror: fail,
+                        callback: () => setStage(AuthManagerStage.INIT_CLIENT)
+                        // });
                         // },
                     });
                     break;
@@ -78,7 +78,9 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
 
     const logIn = () => {
         gapi.auth2.getAuthInstance().signIn()
-            .then(() => {p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get())});
+            .then(() => {
+                p.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get())
+            });
     };
 
     const header = () => {
@@ -118,7 +120,8 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
     };
 
     return (
-        <Modal backdrop="static" show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {}}>
+        <Modal backdrop="static" show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {
+        }}>
             <Modal.Header><Modal.Title>{header()}</Modal.Title></Modal.Header>
             <Modal.Body>{content()}</Modal.Body>
             {stage == AuthManagerStage.AUTH_READY ? <Modal.Footer>

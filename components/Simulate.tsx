@@ -11,7 +11,7 @@ const connector = connect(
     (d) => bindActionCreators(Dispatcher, d),
 );
 
-const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show: boolean; onClose: () => void;}> = (p) => {
+const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { show: boolean; onClose: () => void; }> = (p) => {
     const [queues, setQueues] = useState<number[][][]>([[]]);
     const [currentColor, setCurrentColor] = useState<number>(0);
     const [actionCount, setActionCount] = useState<number>(0);
@@ -147,44 +147,56 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & {show
                     ))}
                 </div>
                 <div className={"pt-2"}>
-                Current paintbrush:
-                <span className={"pl-1"}><ColorStrip colors={[p.colors.length > currentColor ? p.colors[currentColor] : p.colors[0]]} /></span>
-                <br/>Actions taken: {actionCount}
-                <br/>Clients lost due to incorrect actions: {lostClients}
-                <p>
-                <Button variant={mode == 1 ? "primary" : "secondary"} onClick={() => setMode(1)}>Scribble</Button>
-                <Button variant={mode == 2 ? "primary" : "secondary"} onClick={() => setMode(2)}>Flick</Button>
-                <Button variant={mode == 3 ? "primary" : "secondary"} onClick={() => setMode(3)}>Drag</Button>
-                {p.colors.map((c, i) => <Button variant="secondary" key={i} onClick={() => {setActionCount(a => a + 1); setCurrentColor(i)}}><ColorStrip colors={[c]} /></Button>)}
-                </p>
+                    Current paintbrush:
+                    <span className={"pl-1"}><ColorStrip
+                        colors={[p.colors.length > currentColor ? p.colors[currentColor] : p.colors[0]]}/></span>
+                    <br/>Actions taken: {actionCount}
+                    <br/>Clients lost due to incorrect actions: {lostClients}
+                    <p>
+                        <Button variant={mode == 1 ? "primary" : "secondary"}
+                                onClick={() => setMode(1)}>Scribble</Button>
+                        <Button variant={mode == 2 ? "primary" : "secondary"} onClick={() => setMode(2)}>Flick</Button>
+                        <Button variant={mode == 3 ? "primary" : "secondary"} onClick={() => setMode(3)}>Drag</Button>
+                        {p.colors.map((c, i) => <Button variant="secondary" key={i} onClick={() => {
+                            setActionCount(a => a + 1);
+                            setCurrentColor(i)
+                        }}><ColorStrip colors={[c]}/></Button>)}
+                    </p>
                 </div>
                 <style jsx>{`
                   :global(.modal-bw) {
                     width: 90%;
-                    max-width: 800px!important;
+                    max-width: 800px !important;
                   }
+
                   .container-row {
                     width: 100%;
                     display: flex;
                   }
+
                   .container-row > div {
                     flex-grow: 1;
                     flex-shrink: 1;
                     flex-basis: 0;
                     padding: .1rem;
                   }
+
                   .container-row > div > div {
                     padding: 1rem;
                   }
+
                   .front > div > div {
                     background: rgba(255, 255, 255, .1);
                   }
+
                   .front > div.empty {
                     pointer-events: none;
                   }
+
                   .front > div:not(.empty) > div:hover, .front > div.selected:not(.empty) > div {
                     background: rgba(255, 255, 255, ${mode > 0 ? 1 : .1});
                   }
+
                   div {
                     text-align: center;
                   }

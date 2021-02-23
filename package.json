@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "bootstrap": "4.6.0",
+    "json-stringify-pretty-compact": "^3.0.0",
     "next": "10.0.7",
     "query-string": "6.14.0",
     "react": "17.0.1",

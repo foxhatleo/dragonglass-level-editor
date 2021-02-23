@@ -1,8 +1,8 @@
 import ActionType from "./ActionType";
 import Action, {CellInd} from "./Action";
 
-const marker = <T> (type: ActionType): (() => Action) => (() => ({type} as unknown as Action));
-const updater = <T> (type: ActionType):
+const marker = <T>(type: ActionType): (() => Action) => (() => ({type} as unknown as Action));
+const updater = <T>(type: ActionType):
     ((value: T) => Action) => ((value: T) => ({type, value} as unknown as Action));
 
 export const clearSelection = marker(ActionType.CLEAR_SELECTION);

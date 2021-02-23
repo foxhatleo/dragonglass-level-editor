@@ -11,14 +11,14 @@ const connector = connect(
     (d) => bindActionCreators(Dispatcher, d),
 );
 
-const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & {queueInd: number; customerInd: number;}> = (p) => {
+const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & { queueInd: number; customerInd: number; }> = (p) => {
     const queue = p.queues[p.queueInd];
     if (p.customerInd > queue.length) return null;
     let inner;
     if (p.customerInd < queue.length) {
         const colorInds = queue[p.customerInd];
         const colors = colorInds.map((c) => p.colors[c]);
-        inner = <ColorStrip colors={colors} />;
+        inner = <ColorStrip colors={colors}/>;
     } else if (p.customerInd == queue.length) {
         inner = <>&lt;add&gt;</>
     }
@@ -46,6 +46,7 @@ const _Cell: React.FunctionComponent<ConnectedProps<typeof connector> & {queueIn
                     color: ${p.editorSelected[p.queueInd][p.customerInd] ? "black" : "white"};
                     background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? 1 : .2});
                   }
+
                   .area:hover, .area:active {
                     background: rgba(255, 255, 255, ${p.editorSelected[p.queueInd][p.customerInd] ? 1 : .35});
                   }
@@ -75,7 +76,7 @@ const TableArea: React.FunctionComponent<ConnectedProps<typeof connector>> = (p)
                         <div className={"content-row"} key={i}>
                             {[...Array(p.queues.length)].map((_, i2) => (
                                 <div className={"cell"} key={i2}>
-                                    <Cell queueInd={i2} customerInd={i} />
+                                    <Cell queueInd={i2} customerInd={i}/>
                                 </div>
                             ))}
                         </div>
@@ -94,21 +95,25 @@ const TableArea: React.FunctionComponent<ConnectedProps<typeof connector>> = (p)
               .table-area :global(.btn) {
                 padding: .1rem .5rem;
               }
+
               .table-area {
                 padding: 1rem;
                 border-radius: 10px;
                 background: black;
                 border: 1px solid #666;
               }
+
               .cell {
                 width: 120px;
                 display: inline-block;
                 padding: .1rem .2rem;
                 text-align: center;
               }
+
               .cell.pm {
                 width: auto;
               }
+
               .content-row .cell {
                 padding: .3rem .1rem;
               }

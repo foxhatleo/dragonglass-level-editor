@@ -16,4 +16,5 @@ enum ActionType {
     SET_COLORS,
     FAIL,
 }
+
 export default ActionType;

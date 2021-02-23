@@ -1,7 +1,9 @@
 import ActionType from "./ActionType";
 import {Action as ReduxAction} from "redux";
 
-interface PureAction<T extends ActionType> extends ReduxAction<T> {}
+interface PureAction<T extends ActionType> extends ReduxAction<T> {
+}
+
 interface SetterAction<T extends ActionType, S> extends PureAction<T> {
     value: S;
 }

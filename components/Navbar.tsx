@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Button, Navbar as RBNavbar, NavbarBrand} from "react-bootstrap";
 import {connect, ConnectedProps} from "react-redux";
 import State from "../redux/store/State";
@@ -8,25 +8,26 @@ import ColorStrip from "./ColorStrip";
 import * as V1Representation from "../redux/util/V1Representation";
 
 const connector = connect(
-    (s: State) => ({name: s.name, colorLength: s.level.colors.length, colors: s.level.colors,
+    (s: State) => ({
+        name: s.name, colorLength: s.level.colors.length, colors: s.level.colors,
         selected: s.editor.selected,
         queues: s.level.queues,
         level: s.level,
         saved: s.editor.lastStored,
-        anySelected: s.editor.selected.reduce((p, q) => (p || q.reduce((p, c) => p || (c > 0), false)), false)}),
+        anySelected: s.editor.selected.reduce((p, q) => (p || q.reduce((p, c) => p || (c > 0), false)), false)
+    }),
     (d) => bindActionCreators(Dispatcher, d),
 );
-const Navbar: React.FunctionComponent<ConnectedProps<typeof connector> & {onColor: () => void; onSimulate: () => void;}> = (p) => {
+const Navbar: React.FunctionComponent<ConnectedProps<typeof connector> & { onColor: () => void; onSimulate: () => void; }> = (p) => {
     const anySelected = p.anySelected;
     const exportJSON = () => {
         const blob = new Blob([V1Representation.stringify(p.level, true)], {type: "application/json"});
         const a = p.name.split(".").concat();
         a.splice(a.length - 1, 1);
         const filename = a.join(".") + ".json";
-        if(typeof window.navigator.msSaveOrOpenBlob != "undefined") {
+        if (typeof window.navigator.msSaveOrOpenBlob != "undefined") {
             window.navigator.msSaveBlob(blob, filename);
-        }
-        else{
+        } else {
             const elem = window.document.createElement('a');
             elem.href = window.URL.createObjectURL(blob);
             elem.download = filename;

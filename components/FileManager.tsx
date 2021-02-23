@@ -13,7 +13,7 @@ const nwConnector = connect(
     (d) => bindActionCreators(Dispatcher, d),
 );
 
-const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {folderId: string; show: boolean;}> = (p) => {
+const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & { folderId: string; show: boolean; }> = (p) => {
     const [filename, _setFilename] = useState<string>(EXT);
     const setFilename = (e: ChangeEvent<HTMLInputElement>) => {
         let fn = e.currentTarget.value.trim();
@@ -51,12 +51,13 @@ const NewWindow: React.FunctionComponent<ConnectedProps<typeof nwConnector> & {f
     };
 
     return (
-        <Modal backdrop="static" show={p.loggedIn && p.show} onHide={() => {}}>
+        <Modal backdrop="static" show={p.loggedIn && p.show} onHide={() => {
+        }}>
             <Modal.Header><Modal.Title>Enter file name</Modal.Title></Modal.Header>
             <Modal.Body>
                 Enter a name for your new level file.
                 <p><FormControl onSelect={selectDetect} disabled={creating}
-                                autoCapitalize="no" onChange={setFilename} value={filename} /></p>
+                                autoCapitalize="no" onChange={setFilename} value={filename}/></p>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" disabled={filename.length <= EXT_LEN || creating} onClick={create}>
@@ -73,73 +74,48 @@ const fmConnector = connect(
     (d) => bindActionCreators(Dispatcher, d),
 );
 
-const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & {googleState: any;}> = (p) => {
+const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & { createMode: boolean; id: string; }> = (p) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [driveApiReady, setDriveApiReady] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
+    const showFolder = p.createMode && driveApiReady;
 
-    const googleStateExists = typeof p.googleState === "object" && p.googleState !== null;
-    const showFolder = (googleStateExists &&
-        p.googleState["action"] === "create" &&
-        p.fileId.length <= 0) &&
-        driveApiReady;
-
+    // Monitor for Google Drive API for when it is ready.
     useEffect(() => {
         const i = setInterval(() => {
-            if (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files) {
+            if (typeof gapi !== "undefined" && gapi.client && gapi.client.drive && gapi.client.drive.files) {\
+                console.log("Drive API is ready.");
                 setDriveApiReady(true);
                 clearInterval(i);
             }
         }, 50);
     }, []);
 
+    // When everything is ready, load file.
     useEffect(() => {
-        if (googleStateExists && p.googleState["action"] === "open" &&
-            p.fileId != p.googleState["ids"][0]) {
-            p.setFileId(p.googleState["ids"][0]);
-        }
-    }, [p.googleState]);
-
-    const loadFile = () => {
-        setLoading(true);
-        gapi.client.drive.files.get({
-            fileId: p.fileId,
-            alt: "media"
-        }).then(res => {
-            gapi.client.drive.files.get({
-                fileId: p.fileId
-            }).then(res2 => {
+        if (p.loggedIn && driveApiReady && !p.createMode) {
+            setLoading(true);
+            Promise.all([
+                gapi.client.drive.files.get({fileId: p.fileId, alt: "media"}),
+                gapi.client.drive.files.get({fileId: p.fileId}),
+            ]).then(([media, metadata]) => {
                 setLoading(false);
-                p.setName(JSON.parse(res2.body)["name"]);
-                p.parseData(res.body || "");
-            }).catch((e) => p.fail(["open:metadata", e]));
-        }).catch((e) => p.fail(["open:media", e]));
-    };
-
-    useEffect(() => {
-        if (p.fileId.length > 0 && p.loggedIn && driveApiReady) {
-            loadFile();
+                p.setName(JSON.parse(metadata.body)["name"]);
+                p.parseData(media.body || "");
+            }).catch((e) => p.fail(["open", e]));
         }
-    }, [p.fileId, driveApiReady, p.loggedIn]);
+    }, [driveApiReady, p.loggedIn]);
 
     return (
         <>
-            <NWC folderId={googleStateExists ? p.googleState["folderId"] : ""} show={showFolder} />
-            <Modal backdrop="static" show={loading} onHide={() => {}}>
+            <NWC folderId={p.id} show={showFolder}/>
+            <Modal backdrop="static" show={loading} onHide={() => {
+            }}>
                 <Modal.Header><Modal.Title>Loading file...</Modal.Title></Modal.Header>
                 <Modal.Body>
                     Loading level file... This make take a few seconds.
                 </Modal.Body>
             </Modal>
-            <Modal backdrop="static" show={p.googleState === null} onHide={() => {}}>
-                <Modal.Header><Modal.Title>Error</Modal.Title></Modal.Header>
-                <Modal.Body>
-                    Please open this app from Google Drive by either opening an existing level file or creating a new
-                    level file.
-                </Modal.Body>
-            </Modal>
         </>
-    )
-
+    );
 };
 export default fmConnector(FileManager);

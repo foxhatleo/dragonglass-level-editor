@@ -15,7 +15,8 @@ const connector = connect(
     }),
     (d) => bindActionCreators(Dispatcher, d),
 );
-class SaveManager extends React.Component<ConnectedProps<typeof connector>, {loading: boolean;}> {
+
+class SaveManager extends React.Component<ConnectedProps<typeof connector>, { loading: boolean; }> {
     private interval: ReturnType<typeof setTimeout> | undefined;
 
     constructor(p: ConnectedProps<typeof connector>) {
@@ -54,11 +55,12 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {loa
 
     render() {
         if (this.props.ready && typeof window !== "undefined") {
-            window.onbeforeunload = this.state.loading ? function() {
+            window.onbeforeunload = this.state.loading ? function () {
                 return "It seems that your level has not been saved yet. Are you sure you want to exit?";
             } : null;
         }
         return null;
     }
 }
+
 export default connector(SaveManager);

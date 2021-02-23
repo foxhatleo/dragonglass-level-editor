@@ -10,7 +10,7 @@ const connector = connect(
     (s: State) => ({colors: s.level.colors}),
     (d) => bindActionCreators(Dispatcher, d),
 );
-const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & {onClose: () => void; show: boolean;}> = (p) => {
+const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & { onClose: () => void; show: boolean; }> = (p) => {
     const [colors, setColors] = useState<string[]>([]);
     useEffect(() => {
         setColors(p.colors);
@@ -19,7 +19,9 @@ const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & {o
         p.setColors(colors);
         p.onClose();
     };
-    const addNewColor = () => {setColors([...colors, "#ffffff"])};
+    const addNewColor = () => {
+        setColors([...colors, "#ffffff"])
+    };
     const removeColor = () => {
         const c = colors.concat();
         c.splice(c.length - 1, 1);
@@ -28,7 +30,8 @@ const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & {o
     const cancel = p.onClose;
     return (
         <>
-            <Modal backdrop="static" show={p.show} onHide={() => {}}>
+            <Modal backdrop="static" show={p.show} onHide={() => {
+            }}>
                 <Modal.Header><Modal.Title>Change colors</Modal.Title></Modal.Header>
                 <Modal.Body>
                     {
@@ -39,7 +42,7 @@ const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & {o
                                     const cs = colors.concat();
                                     cs[i] = c.hex;
                                     setColors(cs);
-                                }} /></div>
+                                }}/></div>
                             </div>
                         ))
                     }
