@@ -3,6 +3,7 @@ import State, {defaultState} from "../store/State";
 import ActionType from "../action/ActionType";
 import Action from "../action/Action";
 import * as V1Representation from "../util/V1Representation";
+import * as Config from "../../config/Google";
 
 function lastClicked(s: number[][]): [[number, number], number] {
     let biggest = 0, qI = 0, cI = 0;
@@ -22,7 +23,16 @@ function lastClicked(s: number[][]): [[number, number], number] {
 const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
     switch (a.type) {
         case ActionType.UPDATE_SIGN_IN_STATUS: {
-            return {...s, loggedIn: a.value};
+            if (!a.value) return {...s, loggedIn: false};
+            const grantedScopes = gapi.auth2.getAuthInstance().currentUser.get().getGrantedScopes().split(" ");
+            let missingScope = false;
+            for (let s of Config.SCOPES) {
+                if (grantedScopes.indexOf(s) < 0) {
+                    missingScope = true;
+                    break;
+                }
+            }
+            return {...s, loggedIn: !missingScope};
         }
         case ActionType.SET_FILE_ID: {
             return {...s, fileId: a.value};
