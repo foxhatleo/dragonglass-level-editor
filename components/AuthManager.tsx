@@ -86,9 +86,8 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
                             Gmail, Contacts, Calendar, etc).
                         </p>
                         <p>
-                            <strong>Privacy policy</strong>
-                            The privacy policy of this app is available
-                            <a href={"https://github.com/foxhatleo/panic-painter-level-editor/blob/master/PRIVACY.md"}>here</a>.
+                            <strong>Privacy policy</strong><br/>
+                            The privacy policy of this app is available <a href={"https://github.com/foxhatleo/panic-painter-level-editor/blob/master/PRIVACY.md"}>here</a>.
                         </p>
                         <p>
                             <strong>If you are stuck on this screen</strong><br/>
