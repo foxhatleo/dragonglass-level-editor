@@ -19,6 +19,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
     const [currentColor, setCurrentColor] = useState<number>(0);
     const [actionCount, setActionCount] = useState<number>(0);
     const [lostClients, setLostClients] = useState<number>(0);
+    const [satisfiedClients, setSatisfiedClients] = useState<number>(0);
     const [lostClientsP, setLostClientsP] = useState<number>(0);
     const [mode, _setMode] = useState<number>(0);
     const [selected, setSelected] = useState<boolean[]>([]);
@@ -96,6 +97,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
         setActionCount(0);
         setLostClients(0);
         setLostClientsP(0);
+        setSatisfiedClients(0);
         setColors(p.colors);
         _setMode(0);
         clearSelected();
@@ -151,6 +153,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
             if (t[i][0].length < 1) {
                 removingFromQueue = true;
                 t[i].splice(0, 1);
+                setSatisfiedClients(i => i + 1)
             }
             q = t;
             return t;
@@ -276,6 +279,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                     <span className={"pl-1"}><ColorStrip
                         colors={[colors.length > currentColor ? colors[currentColor] : colors[0]]}/></span>
                     <br/>Actions taken: {actionCount}
+                    <br/>Clients satisfied: {satisfiedClients}
                     <br/>Clients lost due to incorrect actions: {lostClients}
                     <br/>Clients lost due to impatience: {lostClientsP}
                     <p>{helpText}</p>
@@ -332,6 +336,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                 <strong>Finished.</strong>
                 <br/>Level time remaining when finishing: {leftTime}
                 <br/>Actions taken: {actionCount}
+                <br/>Clients satisfied: {satisfiedClients}
                 <br/>Clients lost due to incorrect actions: {lostClients}
                 <br/>Clients lost due to impatience: {lostClientsP}
                 <br/>Clients unfinished because level time ran out: {unfinished}
