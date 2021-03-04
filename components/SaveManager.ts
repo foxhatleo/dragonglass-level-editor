@@ -6,6 +6,7 @@ import * as Dispatcher from "../redux/action/Dispatcher";
 import {setTimeout} from "timers";
 import * as V1Representation from "../redux/util/V1Representation";
 import {reload} from "./FileManager";
+import {isDebug} from "../config/Debug";
 
 const connector = connect(
     (s: State) => ({
@@ -36,6 +37,10 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {
     update(): void {
         const l = this.props.level;
         const j = V1Representation.stringify(l);
+        if (isDebug()) {
+            this.props.markSaved(j);
+            return;
+        }
         if (this.state.saving || !this.props.ready || j == this.props.saved || this.state.savingError > MAX_ERROR_ALLOWED) return;
         this.setState({saving: true});
         gapi.client.request({
@@ -58,7 +63,7 @@ class SaveManager extends React.Component<ConnectedProps<typeof connector>, {
     }
 
     refresh(): void {
-        if (this.state.saving || this.state.refreshing || this.state.refreshingError > MAX_ERROR_ALLOWED) return;
+        if (isDebug() || this.state.saving || this.state.refreshing || this.state.refreshingError > MAX_ERROR_ALLOWED) return;
         const l = this.props.level;
         const j = V1Representation.stringify(l);
         if (j != this.props.saved) return;

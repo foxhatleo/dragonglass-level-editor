@@ -26,5 +26,8 @@ declare type Action =
     SetterAction<ActionType.CTRL_CLICK, CellInd> |
     SetterAction<ActionType.SHIFT_CLICK, CellInd> |
     SetterAction<ActionType.SINGLE_CLICK, CellInd> |
-    SetterAction<ActionType.SET_FILE_ID, string>;
+    SetterAction<ActionType.SET_FILE_ID, string> |
+    SetterAction<ActionType.SET_LEVEL_TIME, number> |
+    SetterAction<ActionType.SET_CANVAS_BASE_TIME, number> |
+    SetterAction<ActionType.SET_CANVAS_PER_COLOR_TIME, number>;
 export default Action;

@@ -1,4 +1,5 @@
 import {LevelData} from "../store/State";
+import prettyStringify from "json-stringify-pretty-compact";
 
 export function parse(a: string): LevelData | null {
     const o = JSON.parse(a.replaceAll(/;.*\n/g, "").trim());
@@ -17,6 +18,9 @@ const pretext =
     "\n\n\n";
 
 export function stringify(o: LevelData, forExport: boolean = false): string {
-    return (!forExport ? pretext : "") +
-        JSON.stringify({...o, version: 1}, null, forExport ? 2 : undefined);
+    if (!forExport) {
+        return pretext + JSON.stringify({...o, version: 1});
+    } else {
+        return prettyStringify({...o, version: 1});
+    }
 }

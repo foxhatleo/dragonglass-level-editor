@@ -5,6 +5,7 @@ import {connect, ConnectedProps} from "react-redux";
 import {bindActionCreators} from "redux";
 import State from "../redux/store/State";
 import * as Config from "../config/Google";
+import {isDebug} from "../config/Debug";
 
 enum AuthManagerStage {
     ERROR,
@@ -26,6 +27,7 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
     }
 
     useEffect(() => {
+        if (isDebug()) return;
         try {
             switch (stage) {
                 case AuthManagerStage.LOAD_AUTH: {
@@ -100,7 +102,7 @@ const AuthManager: React.FunctionComponent<ConnectedProps<typeof connector>> = (
     };
 
     return (
-        <Modal backdrop="static" show={stage !== AuthManagerStage.AUTH_READY || !p.loggedIn} onHide={() => {}}>
+        <Modal backdrop="static" show={!isDebug() && (stage !== AuthManagerStage.AUTH_READY || !p.loggedIn)} onHide={() => {}}>
             <Modal.Header><Modal.Title>{header()}</Modal.Title></Modal.Header>
             <Modal.Body>{content()}</Modal.Body>
             {stage == AuthManagerStage.AUTH_READY ? <Modal.Footer>

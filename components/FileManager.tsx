@@ -4,6 +4,7 @@ import State from "../redux/store/State";
 import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
 import {Button, FormControl, Modal} from "react-bootstrap";
+import {isDebug} from "../config/Debug";
 
 const EXT = ".ppl";
 const EXT_LEN = EXT.length;
@@ -110,6 +111,12 @@ const fmConnector = connect(
 );
 
 const FileManager: React.FunctionComponent<ConnectedProps<typeof fmConnector> & { createMode: boolean; }> = (p) => {
+    if (isDebug()) {
+        p.setName("Debug Mode")
+        p.markReady();
+        return <></>;
+    }
+
     const [loading, setLoading] = useState<boolean>(false);
     const [driveApiReady, setDriveApiReady] = useState<boolean>(false);
     const showFolder = p.createMode && driveApiReady;

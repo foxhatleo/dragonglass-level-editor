@@ -15,6 +15,9 @@ enum ActionType {
     MARK_SAVED,
     SET_COLORS,
     FAIL,
+    SET_LEVEL_TIME,
+    SET_CANVAS_BASE_TIME,
+    SET_CANVAS_PER_COLOR_TIME,
 }
 
 export default ActionType;

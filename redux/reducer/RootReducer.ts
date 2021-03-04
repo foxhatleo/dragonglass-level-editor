@@ -202,6 +202,33 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                 })
             };
         }
+        case ActionType.SET_LEVEL_TIME: {
+            const tObj = s.level["timer"] || {};
+            if (a.value >= 0) {
+                tObj.levelTime = a.value;
+            } else {
+                delete tObj["levelTime"];
+            }
+            return {...s, level: {...s.level, timer: tObj}};
+        }
+        case ActionType.SET_CANVAS_BASE_TIME: {
+            const tObj = s.level["timer"] || {};
+            if (a.value >= 0) {
+                tObj.canvasBaseTime = a.value;
+            } else {
+                delete tObj["canvasBaseTime"];
+            }
+            return {...s, level: {...s.level, timer: tObj}};
+        }
+        case ActionType.SET_CANVAS_PER_COLOR_TIME: {
+            const tObj = s.level["timer"] || {};
+            if (a.value >= 0) {
+                tObj.canvasPerColorTime = a.value;
+            } else {
+                delete tObj["canvasPerColorTime"];
+            }
+            return {...s, level: {...s.level, timer: tObj}};
+        }
     }
     return s;
 };

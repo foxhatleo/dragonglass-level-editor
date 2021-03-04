@@ -20,7 +20,13 @@ const connector = connect(
     }),
     (d) => bindActionCreators(Dispatcher, d),
 );
-const Navbar: React.FunctionComponent<ConnectedProps<typeof connector> & { onColor: () => void; onSimulate: () => void; }> = (p) => {
+export type NavbarProps = {
+    onColor: () => void;
+    onSimulate: () => void;
+    onTimer: () => void;
+};
+
+const Navbar: React.FunctionComponent<ConnectedProps<typeof connector> & NavbarProps> = (p) => {
     const anySelected = p.anySelected;
     const exportJSON = () => {
         const blob = new Blob([V1Representation.stringify(p.level, true)], {type: "application/json"});
@@ -45,6 +51,7 @@ const Navbar: React.FunctionComponent<ConnectedProps<typeof connector> & { onCol
                 {!anySelected ? <>
                     <Button onClick={p.onColor}>Edit colors ({p.colorLength})</Button>
                     <Button onClick={p.onSimulate}>Simulate</Button>
+                    <Button onClick={p.onTimer}>Timer</Button>
                     <Button onClick={exportJSON}>Export</Button>
                 </> : <>
                     {p.colors.map((c, i) => {

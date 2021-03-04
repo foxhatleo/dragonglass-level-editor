@@ -1,8 +1,15 @@
 import * as V1Representation from "../util/V1Representation";
 
+export type TimerData = {
+    levelTime?: number;
+    canvasBaseTime?: number;
+    canvasPerColorTime?: number;
+};
+
 export type LevelData = {
     colors: string[];
     queues: number[][][];
+    timer?: TimerData;
 };
 
 declare type RootState = {

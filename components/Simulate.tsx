@@ -1,26 +1,41 @@
 import React, {useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import {connect, ConnectedProps} from "react-redux";
-import State from "../redux/store/State";
+import State, {TimerData} from "../redux/store/State";
 import {bindActionCreators} from "redux";
 import * as Dispatcher from "../redux/action/Dispatcher";
 import ColorStrip from "./ColorStrip";
+import {GLOBAL_TIMER} from "../config/GlobalTimer";
 
 const connector = connect(
-    (s: State) => ({queues: s.level.queues, colors: s.level.colors}),
+    (s: State) => ({timer: s.level.timer || {}, queues: s.level.queues, colors: s.level.colors}),
     (d) => bindActionCreators(Dispatcher, d),
 );
 
 const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { show: boolean; onClose: () => void; }> = (p) => {
     const [queues, setQueues] = useState<number[][][]>([[]]);
+    const [startTimes, setStartTimes] = useState<number[][]>([]);
     const [colors, setColors] = useState<string[]>(["#000000"]);
     const [currentColor, setCurrentColor] = useState<number>(0);
     const [actionCount, setActionCount] = useState<number>(0);
     const [lostClients, setLostClients] = useState<number>(0);
+    const [lostClientsP, setLostClientsP] = useState<number>(0);
     const [mode, _setMode] = useState<number>(0);
     const [selected, setSelected] = useState<boolean[]>([]);
     const [startDrag, setStartDrag] = useState<number>(-1);
+    const [stage, setStage] = useState<number>(0);
     const clearSelected = () => setSelected([...Array(p.queues.length)].map(_ => false));
+    const [secondsSoFar, setSecondsSoFar] = useState<number>(-3);
+    const [interval, setInt] = useState<any | null>(null);
+    const [timerData, setTimerData] = useState<Required<TimerData>>(GLOBAL_TIMER);
+    const [leftTime, setLeftTime] = useState<number>(-1);
+
+    const unfinished = queues.reduce((p, c) => p + ((c.length > 0) ? 1 : 0), 0);
+    const done = unfinished == 0 || secondsSoFar >= timerData.levelTime;
+
+    if (done && leftTime < 0) {
+        setLeftTime(timerData.levelTime - secondsSoFar);
+    }
 
     const setMode = (i: number) => {
         _setMode(i);
@@ -28,15 +43,67 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
         setStartDrag(-1);
     }
 
+    useEffect(() => {
+        if (stage > 0 && !interval) {
+            setInt(setInterval(() => updateCountdown(), 1000));
+        } else if (interval) {
+            clearInterval(interval);
+            setInt(null);
+            setSecondsSoFar(-3);
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+            setInt(null);
+        };
+    }, [stage]);
+
+    const updateCountdown = () => {
+        setSecondsSoFar(i => i + 1);
+    };
+
+    const calcAllowedTime = (i: number, q = queues, td = timerData) => {
+        return q[i].length == 0 || q[i][0].length == 0 ? 0 : (td.canvasBaseTime + td.canvasPerColorTime * q[i][0].length);
+    };
+
+    if (stage > 0 && !done) {
+        let cq: number[][][] = queues;
+        for (let i = 0; i < queues.length; i++) {
+            if (queues[i].length <= 0) break;
+            const elapsedTime = secondsSoFar - startTimes[i][1];
+            if (elapsedTime >= startTimes[i][0]) {
+                setLostClientsP(i => i + 1);
+                setQueues(q => {
+                    const t = q.map(a => a.map(b => b.map(c => c)));
+                    cq = t;
+                    t[i].splice(0, 1);
+                    return t;
+                })
+                setStartTimes(st => {
+                    const nst = st.map(a => a.map(b => b));
+                    nst[i][0] = calcAllowedTime(i, cq);
+                    nst[i][1] = secondsSoFar;
+                    return nst;
+                });
+            }
+        }
+    }
+
     const reset = () => {
+        const td = {...GLOBAL_TIMER, ...p.timer};
         setQueues(p.queues.map(a => a.map(b => b.map(c => c))));
         setCurrentColor(Math.floor(p.colors.length * Math.random()));
+        setStartTimes([...Array(p.queues.length)].map((_, i) => [calcAllowedTime(i, p.queues, td), 0]));
         setActionCount(0);
         setLostClients(0);
+        setLostClientsP(0);
         setColors(p.colors);
         _setMode(0);
         clearSelected();
         setStartDrag(-1);
+        setStage(0);
+        setSecondsSoFar(-3);
+        setTimerData(td);
+        setLeftTime(-1);
     };
 
     useEffect(() => {
@@ -66,6 +133,8 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
         if (mode == 2) clearSelected();
     };
     const baseClick = (i: number) => {
+        let removingFromQueue = false;
+        let q: number[][][];
         setQueues((queues) => {
             const t = queues.map(a => a.map(b => b.map(c => c)));
             if (i < 0 || i >= queues.length || t[i].length == 0) return t;
@@ -74,14 +143,24 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                 if (t[i][0].length == 0) return t;
                 setLostClients((p) => p + 1);
                 t[i].splice(0, 1);
-                setQueues(t);
+                removingFromQueue = true;
+                q = t;
                 return t;
             }
             t[i][0].splice(ind, 1);
             if (t[i][0].length < 1) {
+                removingFromQueue = true;
                 t[i].splice(0, 1);
             }
+            q = t;
             return t;
+        });
+        if (removingFromQueue) setStartTimes((s) => {
+           const ns = [...s];
+           if (queues[i].length <= 0)  return ns;
+           ns[i][0] = calcAllowedTime(i, q);
+           ns[i][1] = secondsSoFar;
+           return ns;
         });
     };
     const clickTile = (i: number) => {
@@ -150,7 +229,26 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
     return (
         <Modal show={p.show} onHide={p.onClose} backdrop="static" dialogClassName="modal-bw">
             <Modal.Header closeButton><Modal.Title>Simulate playtesting</Modal.Title></Modal.Header>
-            <Modal.Body>{queues.reduce((p, c) => p || (c.length > 0), false) ? <>
+            <Modal.Body>
+                {stage == 0 ? <div className={"starting"}>
+                        <Button variant={mode == 1 ? "primary" : "secondary"}
+                                onClick={() => setStage(1)}>Start</Button>
+                    <style jsx>{`
+                        .starting {
+                          text-align: center;
+                        }
+                    `}</style>
+                    </div>
+                    : secondsSoFar < 0 ? <div className={"sec"}>
+                        {-secondsSoFar}
+                        <style jsx>{`
+                          .sec {
+                            text-align: center;
+                            font-size: 3em;
+                          }
+                        `}</style>
+                    </div> : ((!done ? <>
+                        <div>Level Time left: {timerData.levelTime - secondsSoFar}</div>
                 <div className={"container-row"}>
                     {[...Array(queues.length)].map((_, i) => (
                         <div key={i}>
@@ -166,8 +264,9 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                         <div key={i}
                              className={(selected[i] ? "selected" : "") + (queues[i].length == 0 ? " empty" : "")}>
                             <div onClick={() => clickTile(i)} onMouseEnter={() => hover(i)} onMouseLeave={() => out(i)}>
-                                {queues[i].length == 0 ? "<empty>" :
-                                    <ColorStrip colors={queues[i][0].map(id => colors[id])}/>}
+                                {queues[i].length == 0 ? <>&lt;empty&gt;<br/>0</> :
+                                    <><ColorStrip colors={queues[i][0].map(id => colors[id])}/>
+                                    <br/>{startTimes[i][0] - (secondsSoFar - startTimes[i][1])}</>}
                             </div>
                         </div>
                     ))}
@@ -178,6 +277,7 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                         colors={[colors.length > currentColor ? colors[currentColor] : colors[0]]}/></span>
                     <br/>Actions taken: {actionCount}
                     <br/>Clients lost due to incorrect actions: {lostClients}
+                    <br/>Clients lost due to impatience: {lostClientsP}
                     <p>{helpText}</p>
                     <p>
                         <Button variant={mode == 1 ? "primary" : "secondary"}
@@ -230,10 +330,14 @@ const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { sho
                 `}</style>
             </> : <>
                 <strong>Finished.</strong>
+                <br/>Level time remaining when finishing: {leftTime}
                 <br/>Actions taken: {actionCount}
                 <br/>Clients lost due to incorrect actions: {lostClients}
+                <br/>Clients lost due to impatience: {lostClientsP}
+                <br/>Clients unfinished because level time ran out: {unfinished}
                 <div className={"mt-2"}><Button onClick={() => reset()}>Restart</Button></div>
-            </>}</Modal.Body>
+            </>))}
+            </Modal.Body>
         </Modal>
     )
 };

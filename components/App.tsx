@@ -5,6 +5,7 @@ import SaveManager from "./SaveManager";
 import TableArea from "./TableArea";
 import {Container} from "react-bootstrap";
 import Navbar from "./Navbar";
+import TimerWindow from "./TimerWindow";
 import ColorWindow from "./ColorWindow";
 import Simulate from "./Simulate";
 import UnexpectedError from "./UnexpectedError";
@@ -27,6 +28,7 @@ export type AppProps = {
 const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> = (p) => {
     const [showColor, setShowColor] = useState<boolean>(false);
     const [simulate, setSimulate] = useState<boolean>(false);
+    const [timer, setTimer] = useState<boolean>(false);
 
     useEffect(() => {
         p.setFileId(p.id);
@@ -43,10 +45,13 @@ const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> 
             {p.ready ? <>
                 <ColorWindow show={showColor}
                              onClose={() => setShowColor(false)}/>
+                <TimerWindow show={timer}
+                             onClose={() => setTimer(false)}/>
                 <Simulate show={simulate}
                           onClose={() => setSimulate(false)}/>
                 <Navbar onColor={() => setShowColor(true)}
-                        onSimulate={() => setSimulate(true)}/>
+                        onSimulate={() => setSimulate(true)}
+                        onTimer={() => setTimer(true)}/>
                 <Container className={"mt-5 mb-3"}>
                     <TableArea/>
                     <div className={"text-center text-muted"}>

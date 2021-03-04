@@ -1,9 +1,14 @@
 import React from "react";
 import {NextPage} from "next";
 import {Modal} from "react-bootstrap";
+import {isDebug} from "../config/Debug";
 
-const Home: NextPage = () => (
-    <>
+const Home: NextPage = () => {
+    if (isDebug()) {
+        location.href = "/123/edit";
+        return <>Transferring...</>;
+    }
+    return <>
         <Modal backdrop="static" show={true} onHide={() => {
         }}>
             <Modal.Header><Modal.Title>Invalid request</Modal.Title></Modal.Header>
@@ -11,8 +16,8 @@ const Home: NextPage = () => (
                 Please open a level file or create a new one from Google Drive.
             </Modal.Body>
         </Modal>
-    </>
-);
+    </>;
+};
 
 Home.getInitialProps = async (appContext) => {
     const fail = () => {
