@@ -15,7 +15,7 @@ const connector = connect(
 const Simulate: React.FunctionComponent<ConnectedProps<typeof connector> & { show: boolean; onClose: () => void; }> = (p) => {
     const [queues, setQueues] = useState<number[][][]>([[]]);
     const [startTimes, setStartTimes] = useState<number[][]>([]);
-    const [colors, setColors] = useState<string[]>(["#000000"]);
+    const [colors, setColors] = useState<[number, number, number][]>([[0, 0, 0]]);
     const [currentColor, setCurrentColor] = useState<number>(0);
     const [actionCount, setActionCount] = useState<number>(0);
     const [lostClients, setLostClients] = useState<number>(0);
