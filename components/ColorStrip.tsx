@@ -4,7 +4,7 @@ const ColorStrip: React.FunctionComponent<{ colors: [number, number, number][]; 
     <ul>
         {p.colors.map((c, i) => (
             <li key={i}>
-                <span style={{background: `rgb(${p.colors[0]},${p.colors[1]},${p.colors[2]})`}}/>
+                <span style={{background: `rgb(${c[0]},${c[1]},${c[2]})`}}/>
             </li>
         ))}
         <style jsx>{`
