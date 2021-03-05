@@ -31,7 +31,7 @@ const Navbar: React.FunctionComponent<ConnectedProps<typeof connector> & NavbarP
     const exportJSON = () => {
         const blob = new Blob([V1Representation.stringify(p.level, true)], {type: "application/json"});
         const a = p.name.split(".").concat();
-        a.splice(a.length - 1, 1);
+        if (a.length >= 2) a.splice(a.length - 1, 1);
         const filename = a.join(".") + ".json";
         if (typeof window.navigator.msSaveOrOpenBlob != "undefined") {
             window.navigator.msSaveBlob(blob, filename);

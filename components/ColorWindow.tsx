@@ -11,16 +11,16 @@ const connector = connect(
     (d) => bindActionCreators(Dispatcher, d),
 );
 const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & { onClose: () => void; show: boolean; }> = (p) => {
-    const [colors, setColors] = useState<string[]>([]);
+    const [colors, setColors] = useState<[number, number, number][]>([]);
     useEffect(() => {
-        setColors(p.colors);
+        setColors(p.colors.map(i => i.map(c => c) as [number, number, number]));
     }, [p.show]);
     const ok = () => {
         p.setColors(colors);
         p.onClose();
     };
     const addNewColor = () => {
-        setColors([...colors, "#ffffff"])
+        setColors([...colors, [255, 255, 255]])
     };
     const removeColor = () => {
         const c = colors.concat();
@@ -38,9 +38,9 @@ const ColorWindow: React.FunctionComponent<ConnectedProps<typeof connector> & { 
                         colors.map((c, i) => (
                             <div key={i} className={"color"}>
                                 <strong>Color {i}</strong>
-                                <div className={"mt-2"}><CompactPicker color={c} onChange={(c) => {
+                                <div className={"mt-2"}><CompactPicker color={{r: c[0], g: c[1], b: c[2]}} onChange={(c) => {
                                     const cs = colors.concat();
-                                    cs[i] = c.hex;
+                                    cs[i] = [c.rgb.r, c.rgb.g, c.rgb.b];
                                     setColors(cs);
                                 }}/></div>
                             </div>

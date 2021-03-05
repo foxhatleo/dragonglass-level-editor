@@ -1,4 +1,5 @@
 import * as V1Representation from "../util/V1Representation";
+import {hexToRgb} from "../util/V1Representation";
 
 export type TimerData = {
     levelTime?: number;
@@ -7,7 +8,7 @@ export type TimerData = {
 };
 
 export type LevelData = {
-    colors: string[];
+    colors: [number, number, number][];
     queues: number[][][];
     timer?: TimerData;
 };
@@ -26,10 +27,10 @@ export default RootState;
 
 const defaultLevel: LevelData = {
     colors: [
-        "#F44E3B",
-        "#FB9E00",
-        "#68BC00",
-        "#73D8FF",
+        hexToRgb("#F44E3B"),
+        hexToRgb("#FB9E00"),
+        hexToRgb("#68BC00"),
+        hexToRgb("#73D8FF"),
     ],
     queues: [[], [], [], [], []],
 };

@@ -1,10 +1,10 @@
 import React from "react";
 
-const ColorStrip: React.FunctionComponent<{ colors: string[]; }> = (p) => (
+const ColorStrip: React.FunctionComponent<{ colors: [number, number, number][]; }> = (p) => (
     <ul>
         {p.colors.map((c, i) => (
             <li key={i}>
-                <span style={{background: c}}/>
+                <span style={{background: `rgb(${p.colors[0]},${p.colors[1]},${p.colors[2]})`}}/>
             </li>
         ))}
         <style jsx>{`
