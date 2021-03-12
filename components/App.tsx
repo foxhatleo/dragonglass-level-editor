@@ -52,7 +52,7 @@ const App: React.FunctionComponent<ConnectedProps<typeof connector> & AppProps> 
                 <Navbar onColor={() => setShowColor(true)}
                         onSimulate={() => setSimulate(true)}
                         onTimer={() => setTimer(true)}/>
-                <Container className={"mt-5 mb-3"}>
+                <Container className={"mt-5 mb-3"} fluid="lg">
                     <TableArea/>
                     <div className={"text-center text-muted"}>
                         Made with ♥ by Wenhao "Leo" Liang<br/>
