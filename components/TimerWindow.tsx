@@ -76,6 +76,7 @@ const TimerWindow: React.FunctionComponent<ConnectedProps<typeof connector> & { 
                         <strong>Canvas Base Time</strong>
                         <FormControl onChange={(e: ChangeEvent<HTMLInputElement>) => setAttr("canvasBaseTime", e)}
                                      value={timer.canvasBaseTime}
+                                     type={"number"}
                                      min={-1} max={60} step={1} />
                             This is the base time for each canvas.<br/>
                             -1 means using global default, which is set at {GLOBAL_TIMER.canvasBaseTime}.
@@ -84,6 +85,7 @@ const TimerWindow: React.FunctionComponent<ConnectedProps<typeof connector> & { 
                         <strong>Canvas Per Color Time</strong>
                         <FormControl onChange={(e: ChangeEvent<HTMLInputElement>) => setAttr("canvasPerColorTime", e)}
                                      value={timer.canvasPerColorTime}
+                                     type={"number"}
                                      min={-1} max={60} step={1} />
                             This is the time for each color on a canvas, added to the base time.<br/>
                             -1 means using global default, which is set at {GLOBAL_TIMER.canvasPerColorTime}.
