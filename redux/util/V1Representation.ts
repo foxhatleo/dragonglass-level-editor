@@ -19,7 +19,7 @@ export function parse(a: string): LevelData | null {
             cl[i] = hexToRgb(cl[i]);
         }
     }
-    return {colors: cl, queues: o["queues"]};
+    return {colors: cl, queues: o["queues"], timer: o["timer"]};
 }
 
 const pretext =
