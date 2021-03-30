@@ -130,7 +130,9 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
                 const q = selected[qi];
                 for (let ci = 0; ci < q.length - 1; ci++) {
                     if (q[ci] < 1) continue;
-                    queues[qi][ci].splice(queues[qi][ci].indexOf(a.value), 1);
+                    const ind = queues[qi][ci].indexOf(a.value);
+                    if (ind < 0) continue;
+                    queues[qi][ci].splice(ind, 1);
                     if (queues[qi][ci].length == 0) {
                         queues[qi].splice(ci, 1);
                         q.splice(ci, 1);
