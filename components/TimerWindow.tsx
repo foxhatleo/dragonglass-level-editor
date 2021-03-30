@@ -58,7 +58,7 @@ const TimerWindow: React.FunctionComponent<ConnectedProps<typeof connector> & { 
                     </div>
                     <div className={"setting pt-2"}>
                         <strong>Canvas Per Color Time</strong>
-                        <FormControl onChange={(e: ChangeEvent<HTMLInputElement>) => setAttr("canvasBaseTime", e)}
+                        <FormControl onChange={(e: ChangeEvent<HTMLInputElement>) => setAttr("canvasPerColorTime", e)}
                                      value={timer.canvasPerColorTime}
                                      min={-1} max={60} step={1} />
                             This is the time for each color on a canvas, added to the base time.<br/>
