@@ -125,10 +125,11 @@ const RootReducer: Reducer<State, Action> = (s = defaultState, a) => {
         }
         case ActionType.ERASE: {
             const queues = s.level.queues.map(a => a.map(b => b.map(c => c)));
+            debugger;
             const selected = s.selected.map(a => a.map(b => b));
             for (let qi = 0; qi < selected.length; qi++) {
                 const q = selected[qi];
-                for (let ci = 0; ci < q.length; ci++) {
+                for (let ci = 0; ci < q.length - 1; ci++) {
                     if (q[ci] < 1) continue;
                     queues[qi][ci].splice(queues[qi][ci].indexOf(a.value), 1);
                     if (queues[qi][ci].length == 0) {
